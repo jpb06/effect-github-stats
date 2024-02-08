@@ -1,18 +1,21 @@
 {
+  "repository": "https://github.com/jpb06/github-stats.git",
+  "main": "index.js",
   "name": "github-stats",
   "version": "1.0.0",
+  "author": "jpb06 <jp.bois.06@outlook.fr>",
   "description": "Getting user stats from github",
-  "main": "index.js",
+  "keywords": [],
+  "license": "MIT",
   "engines": {
     "node": "20.x"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "dependencies": {
+    "@octokit/core": "^5.1.0",
+    "chalk": "<5",
+    "effect": "^2.2.5",
+    "ts-pattern": "^5.0.6"
   },
-  "keywords": [],
-  "repository": "https://github.com/jpb06/github-stats.git",
-  "author": "jpb06 <jp.bois.06@outlook.fr>",
-  "license": "MIT",
   "devDependencies": {
     "@stylistic/eslint-plugin": "^1.6.0",
     "@types/eslint": "^8.56.2",
@@ -28,5 +31,8 @@
     "prettier": "^3.2.5",
     "readme-package-icons": "^1.1.10",
     "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
