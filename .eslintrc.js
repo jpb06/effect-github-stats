@@ -29,7 +29,7 @@ module.exports = {
       settings: {
         'import/resolver': {
           node: {
-            extensions: ['.ts', '.tsx'],
+            extensions: ['.ts'],
           },
           typescript: {
             alwaysTryTypes: true,
