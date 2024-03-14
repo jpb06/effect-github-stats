@@ -1,14 +1,15 @@
 import { Effect } from 'effect';
 
-import { ConcurrencyArgs } from '../../../../types/concurrency-args.type';
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { arrayRange } from '../../../../util/array-range.util';
+import { defaultConcurrency } from '../constants/default-concurrency.constant';
 import { getPullRequestReviewsPage } from '../paging/get-pull-request-reviews-page.effect';
 
-export interface GetPullRequestReviewsArgs extends ConcurrencyArgs {
+export interface GetPullRequestReviewsArgs {
   owner: string;
   repo: string;
   pullNumber: number;
+  concurrency?: number;
 }
 
 const getPage = (args: GetPullRequestReviewsArgs) => (page: number) =>
@@ -29,7 +30,7 @@ export const getPullRequestReviews = (args: GetPullRequestReviewsArgs) =>
 
       const pagesResults = yield* _(
         Effect.all(arrayRange(2, firstPage.links.last).map(getPage(args)), {
-          concurrency: args.paging ?? 10,
+          concurrency: args.concurrency ?? defaultConcurrency,
         }),
       );
 

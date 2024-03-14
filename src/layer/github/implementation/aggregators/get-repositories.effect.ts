@@ -1,15 +1,16 @@
 import { Effect } from 'effect';
 import { match } from 'ts-pattern';
 
-import { ConcurrencyArgs } from '../../../../types/concurrency-args.type';
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { arrayRange } from '../../../../util/array-range.util';
+import { defaultConcurrency } from '../constants/default-concurrency.constant';
 import { getOrgReposPage } from '../paging/get-org-repos-page.effect';
 import { getUserReposPage } from '../paging/get-user-repos-page.effect';
 
-export interface GetRepositoriesArgs extends ConcurrencyArgs {
+export interface GetRepositoriesArgs {
   target: string;
   type: 'org' | 'user';
+  concurrency?: number;
 }
 
 const getPage =
@@ -40,7 +41,7 @@ export const getRepositories = (args: GetRepositoriesArgs) =>
 
       const pagesResults = yield* _(
         Effect.all(arrayRange(2, firstPage.links.last).map(getPage(args)), {
-          concurrency: args.paging ?? 10,
+          concurrency: args.concurrency ?? defaultConcurrency,
         }),
       );
 
