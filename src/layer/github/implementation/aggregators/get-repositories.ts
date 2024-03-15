@@ -4,8 +4,8 @@ import { match } from 'ts-pattern';
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { arrayRange } from '../../../../util/array-range.util';
 import { defaultConcurrency } from '../constants/default-concurrency.constant';
-import { getOrgReposPage } from '../paging/get-org-repos-page.effect';
-import { getUserReposPage } from '../paging/get-user-repos-page.effect';
+import { getOrgReposPage } from '../paging/get-org-repos-page';
+import { getUserReposPage } from '../paging/get-user-repos-page';
 
 export interface GetRepositoriesArgs {
   target: string;
@@ -49,4 +49,4 @@ export const getRepositories = (args: GetRepositoriesArgs) =>
     }),
   );
 
-export type Repositories = EffectResultSuccess<typeof getRepositories>;
+export type RepositoriesResult = EffectResultSuccess<typeof getRepositories>;

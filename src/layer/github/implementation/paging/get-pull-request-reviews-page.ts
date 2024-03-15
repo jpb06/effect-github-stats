@@ -1,9 +1,10 @@
 import { Effect, pipe } from 'effect';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
-import { GithubApiError } from '../../../errors/github-api.error';
+import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
 import { parseLink } from '../../../logic/parse-link.logic';
 import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
+import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
 
 export interface GetPullRequestReviewsPageArgs {
   owner: string;
@@ -29,20 +30,23 @@ export const getPullRequestReviewsPage = ({
     pipe(
       githubSourceAnalysisProvider,
       Effect.flatMap((octokit) =>
-        Effect.tryPromise({
-          try: () =>
-            octokit.request(
-              'GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews',
-              {
-                owner,
-                repo,
-                pull_number: pullNumber,
-                per_page: 100,
-                page,
-              },
-            ),
-          catch: (e) => new GithubApiError({ cause: e }),
-        }),
+        pipe(
+          Effect.tryPromise({
+            try: () =>
+              octokit.request(
+                'GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews',
+                {
+                  owner,
+                  repo,
+                  pull_number: pullNumber,
+                  per_page: 100,
+                  page,
+                },
+              ),
+            catch: handleOctokitRequestError,
+          }),
+          Effect.retry(retryAfterSchedule(3)),
+        ),
       ),
       Effect.map((response) => ({
         data: response.data,
@@ -51,6 +55,6 @@ export const getPullRequestReviewsPage = ({
     ),
   );
 
-export type PullRequestReviewsPage = EffectResultSuccess<
+export type PullRequestReviewsPageItems = EffectResultSuccess<
   typeof getPullRequestReviewsPage
 >;

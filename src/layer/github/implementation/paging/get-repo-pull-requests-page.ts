@@ -1,9 +1,10 @@
 import { pipe, Effect } from 'effect';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
-import { GithubApiError } from '../../../errors/github-api.error';
+import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
 import { parseLink } from '../../../logic/parse-link.logic';
 import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
+import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
 
 export interface GetRepoPullRequestsPageArgs {
   owner: string;
@@ -11,32 +12,27 @@ export interface GetRepoPullRequestsPageArgs {
   page: number;
 }
 
-export const getRepoPullRequestsPage = ({
-  owner,
-  repo,
-  page,
-}: GetRepoPullRequestsPageArgs) =>
+export const getRepoPullRequestsPage = (args: GetRepoPullRequestsPageArgs) =>
   Effect.withSpan(__filename, {
     attributes: {
-      owner,
-      repo,
-      page,
+      ...args,
     },
   })(
     pipe(
       githubSourceAnalysisProvider,
       Effect.flatMap((octokit) =>
-        Effect.tryPromise({
-          try: () =>
-            octokit.request('GET /repos/{owner}/{repo}/pulls', {
-              owner,
-              repo,
-              state: 'all',
-              per_page: 100,
-              page,
-            }),
-          catch: (e) => new GithubApiError({ cause: e }),
-        }),
+        pipe(
+          Effect.tryPromise({
+            try: () =>
+              octokit.request('GET /repos/{owner}/{repo}/pulls', {
+                state: 'all',
+                per_page: 100,
+                ...args,
+              }),
+            catch: handleOctokitRequestError,
+          }),
+          Effect.retry(retryAfterSchedule(3)),
+        ),
       ),
       Effect.map((response) => ({
         data: response.data,
@@ -45,6 +41,6 @@ export const getRepoPullRequestsPage = ({
     ),
   );
 
-export type RepoPullRequestsPage = EffectResultSuccess<
+export type RepoPullRequestsPageItems = EffectResultSuccess<
   typeof getRepoPullRequestsPage
 >;

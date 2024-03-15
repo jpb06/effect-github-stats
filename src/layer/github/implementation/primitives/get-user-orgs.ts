@@ -1,8 +1,9 @@
 import { pipe, Effect } from 'effect';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
-import { GithubApiError } from '../../../errors/github-api.error';
+import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
 import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
+import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
 
 export const getUserOrgs = (username: string) =>
   Effect.withSpan(__filename, {
@@ -11,14 +12,17 @@ export const getUserOrgs = (username: string) =>
     pipe(
       githubSourceAnalysisProvider,
       Effect.flatMap((octokit) =>
-        Effect.tryPromise({
-          try: () =>
-            octokit.request('GET /user/orgs', {
-              username,
-              per_page: 100,
-            }),
-          catch: (e) => new GithubApiError({ cause: e }),
-        }),
+        pipe(
+          Effect.tryPromise({
+            try: () =>
+              octokit.request('GET /user/orgs', {
+                username,
+                per_page: 100,
+              }),
+            catch: handleOctokitRequestError,
+          }),
+          Effect.retry(retryAfterSchedule(3)),
+        ),
       ),
       Effect.map((response) => response.data),
     ),

@@ -3,22 +3,25 @@ import { Effect } from 'effect';
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { arrayRange } from '../../../../util/array-range.util';
 import { defaultConcurrency } from '../constants/default-concurrency.constant';
-import { getRepoPullRequestsPage } from '../paging/get-repo-pull-requests-page.effect';
+import { getPullRequestReviewsPage } from '../paging/get-pull-request-reviews-page';
 
-export interface GetRepoPullRequestsArgs {
+export interface GetPullRequestReviewsArgs {
   owner: string;
   repo: string;
+  pullNumber: number;
   concurrency?: number;
 }
 
-const getPage = (args: GetRepoPullRequestsArgs) => (page: number) =>
-  getRepoPullRequestsPage({
+const getPage = (args: GetPullRequestReviewsArgs) => (page: number) =>
+  getPullRequestReviewsPage({
     ...args,
     page,
   });
 
-export const getRepoPullRequests = (args: GetRepoPullRequestsArgs) =>
-  Effect.withSpan(__filename, { attributes: { ...args } })(
+export const getPullRequestReviews = (args: GetPullRequestReviewsArgs) =>
+  Effect.withSpan(__filename, {
+    attributes: { ...args },
+  })(
     Effect.gen(function* (_) {
       const firstPage = yield* _(getPage(args)(1));
       if (firstPage.links?.last === undefined) {
@@ -35,4 +38,6 @@ export const getRepoPullRequests = (args: GetRepoPullRequestsArgs) =>
     }),
   );
 
-export type RepoPullRequests = EffectResultSuccess<typeof getRepoPullRequests>;
+export type PullRequestReviewsResult = EffectResultSuccess<
+  typeof getPullRequestReviews
+>;

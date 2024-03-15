@@ -1,7 +1,7 @@
-import { GithubSourcesAnalysisLayerLive } from './layer/github/github-sources-analysis.layer';
-import { SourcesAnalysisLayer } from './layer/sources-analysis.layer';
+import { OctokitLayerLive } from './layer/github/octokit.layer-live';
+import { OctokitLayer } from './layer/octokit.layer';
 
-export { GithubSourcesAnalysisLayerLive, SourcesAnalysisLayer };
+export { OctokitLayerLive, OctokitLayer };
 
 export * from './types/effect.types';
 export * from './layer/errors/github-api.error';
