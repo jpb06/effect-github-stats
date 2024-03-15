@@ -29,7 +29,7 @@ module.exports = {
       settings: {
         'import/resolver': {
           node: {
-            extensions: ['.ts', '.tsx'],
+            extensions: ['.ts'],
           },
           typescript: {
             alwaysTryTypes: true,
@@ -83,6 +83,13 @@ module.exports = {
           },
         ],
       },
+    },
+
+    // Vitest
+    {
+      files: ['**/*.test.ts', '**/*.spec.ts'],
+      plugins: ['eslint-plugin-vitest'],
+      extends: ['plugin:vitest/recommended'],
     },
 
     // Markdown
