@@ -3,7 +3,10 @@ import { pipe, Config, Effect } from 'effect';
 
 import { GithubApiError } from '../errors/github-api.error';
 
-const githubConfig = Config.string('GITHUB_TOKEN');
+const githubConfig = Config.withDefault(
+  Config.string('GITHUB_TOKEN'),
+  'github-token-not-set',
+);
 
 export const githubSourceAnalysisProvider = pipe(
   githubConfig,
