@@ -5,7 +5,7 @@ import { isApiRateLimitError } from '../errors/api-rate-limit.error';
 export const retryAfterSchedule = (retryCount: number) =>
   pipe(
     Schedule.forever,
-    Schedule.whileOutput((retries) => retries <= retryCount),
+    Schedule.whileOutput((retries) => retries + 1 < retryCount),
     Schedule.whileInputEffect((e) => {
       const isApiRateLimit = isApiRateLimitError(e);
       if (isApiRateLimit) {
