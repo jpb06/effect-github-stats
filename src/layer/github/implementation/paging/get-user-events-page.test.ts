@@ -65,7 +65,7 @@ describe('getUserEventsPage effect', () => {
     const { getUserEventsPage } = await import('./get-user-events-page');
 
     const effect = delayEffectAndFlip(
-      getUserEventsPage(args),
+      getUserEventsPage({ ...args, retryCount: 3 }),
       Duration.seconds(80),
     );
     const result = await Effect.runPromise(effect);
@@ -83,7 +83,10 @@ describe('getUserEventsPage effect', () => {
     });
 
     const { getUserEventsPage } = await import('./get-user-events-page');
-    const effect = delayEffect(getUserEventsPage(args), Duration.seconds(40));
+    const effect = delayEffect(
+      getUserEventsPage({ ...args, retryCount: 3 }),
+      Duration.seconds(40),
+    );
     const result = await Effect.runPromise(effect);
 
     expect(console.warn).toHaveBeenCalledTimes(2);

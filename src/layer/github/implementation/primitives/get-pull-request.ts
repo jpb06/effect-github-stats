@@ -2,32 +2,25 @@ import { pipe, Effect } from 'effect';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
-import { parseLink } from '../../../logic/parse-link.logic';
 import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
 import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
 import { FlowOptions } from '../../../types/flow-options.type';
 import { defaultRetryCount } from '../constants/default-retry-count.constant';
 
-export interface GetRepoPullRequestsPageArgs
-  extends Pick<FlowOptions, 'retryCount'> {
+export interface GetPullRequestArgs extends Pick<FlowOptions, 'retryCount'> {
   owner: string;
   repo: string;
-  page: number;
+  number: number;
 }
 
-export const getRepoPullRequestsPage = ({
+export const getPullRequest = ({
   owner,
   repo,
-  page,
+  number,
   retryCount = defaultRetryCount,
-}: GetRepoPullRequestsPageArgs) =>
+}: GetPullRequestArgs) =>
   Effect.withSpan(__filename, {
-    attributes: {
-      owner,
-      repo,
-      page,
-      retryCount,
-    },
+    attributes: { owner, repo, number, retryCount },
   })(
     pipe(
       githubSourceAnalysisProvider,
@@ -35,25 +28,18 @@ export const getRepoPullRequestsPage = ({
         pipe(
           Effect.tryPromise({
             try: () =>
-              octokit.request('GET /repos/{owner}/{repo}/pulls', {
+              octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
                 owner,
                 repo,
-                page,
-                state: 'all',
-                per_page: 100,
+                pull_number: number,
               }),
             catch: handleOctokitRequestError,
           }),
           Effect.retry(retryAfterSchedule(retryCount)),
         ),
       ),
-      Effect.map((response) => ({
-        data: response.data,
-        links: parseLink(response),
-      })),
+      Effect.map((response) => response.data),
     ),
   );
 
-export type RepoPullRequestsPageItems = EffectResultSuccess<
-  typeof getRepoPullRequestsPage
->;
+export type PullRequestResult = EffectResultSuccess<typeof getPullRequest>;

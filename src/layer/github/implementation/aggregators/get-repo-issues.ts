@@ -2,10 +2,11 @@ import { Effect } from 'effect';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { arrayRange } from '../../../../util/array-range.util';
+import { FlowOptions } from '../../../types/flow-options.type';
 import { defaultConcurrency } from '../constants/default-concurrency.constant';
 import { getRepoIssuesPage } from '../paging/get-repo-issues-page';
 
-export interface GetRepoIssuesArgs {
+export interface GetRepoIssuesArgs extends FlowOptions {
   owner: string;
   repo: string;
   concurrency?: number;

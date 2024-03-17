@@ -65,7 +65,7 @@ describe('getUserReposPage effect', () => {
     const { getUserReposPage } = await import('./get-user-repos-page');
 
     const effect = delayEffectAndFlip(
-      getUserReposPage(args),
+      getUserReposPage({ ...args, retryCount: 3 }),
       Duration.seconds(80),
     );
     const result = await Effect.runPromise(effect);
@@ -83,7 +83,10 @@ describe('getUserReposPage effect', () => {
     });
 
     const { getUserReposPage } = await import('./get-user-repos-page');
-    const effect = delayEffect(getUserReposPage(args), Duration.seconds(40));
+    const effect = delayEffect(
+      getUserReposPage({ ...args, retryCount: 3 }),
+      Duration.seconds(40),
+    );
     const result = await Effect.runPromise(effect);
 
     expect(console.warn).toHaveBeenCalledTimes(2);

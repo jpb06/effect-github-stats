@@ -5,17 +5,24 @@ import { handleOctokitRequestError } from '../../../errors/handle-octokit-reques
 import { parseLink } from '../../../logic/parse-link.logic';
 import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
 import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
+import { FlowOptions } from '../../../types/flow-options.type';
+import { defaultRetryCount } from '../constants/default-retry-count.constant';
 
-export interface GetUserEventsPageArgs {
+export interface GetUserEventsPageArgs extends Pick<FlowOptions, 'retryCount'> {
   username: string;
   page: number;
 }
 
-export const getUserEventsPage = ({ username, page }: GetUserEventsPageArgs) =>
+export const getUserEventsPage = ({
+  username,
+  page,
+  retryCount = defaultRetryCount,
+}: GetUserEventsPageArgs) =>
   Effect.withSpan(__filename, {
     attributes: {
       username,
       page,
+      retryCount,
     },
   })(
     pipe(
@@ -31,7 +38,7 @@ export const getUserEventsPage = ({ username, page }: GetUserEventsPageArgs) =>
               }),
             catch: handleOctokitRequestError,
           }),
-          Effect.retry(retryAfterSchedule(3)),
+          Effect.retry(retryAfterSchedule(retryCount)),
         ),
       ),
       Effect.map((response) => ({

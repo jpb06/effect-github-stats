@@ -73,7 +73,7 @@ describe('getPullRequestReviewsPage effect', () => {
     );
 
     const effect = delayEffectAndFlip(
-      getPullRequestReviewsPage(args),
+      getPullRequestReviewsPage({ ...args, retryCount: 3 }),
       Duration.seconds(80),
     );
     const result = await Effect.runPromise(effect);
@@ -95,7 +95,7 @@ describe('getPullRequestReviewsPage effect', () => {
     );
 
     const effect = delayEffect(
-      getPullRequestReviewsPage(args),
+      getPullRequestReviewsPage({ ...args, retryCount: 3 }),
       Duration.seconds(40),
     );
     const result = await Effect.runPromise(effect);

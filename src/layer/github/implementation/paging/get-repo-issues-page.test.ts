@@ -66,7 +66,7 @@ describe('getRepoIssuesPage effect', () => {
     const { getRepoIssuesPage } = await import('./get-repo-issues-page');
 
     const effect = delayEffectAndFlip(
-      getRepoIssuesPage(args),
+      getRepoIssuesPage({ ...args, retryCount: 3 }),
       Duration.seconds(80),
     );
     const result = await Effect.runPromise(effect);
@@ -85,7 +85,10 @@ describe('getRepoIssuesPage effect', () => {
 
     const { getRepoIssuesPage } = await import('./get-repo-issues-page');
 
-    const effect = delayEffect(getRepoIssuesPage(args), Duration.seconds(40));
+    const effect = delayEffect(
+      getRepoIssuesPage({ ...args, retryCount: 3 }),
+      Duration.seconds(40),
+    );
     const result = await Effect.runPromise(effect);
 
     expect(console.warn).toHaveBeenCalledTimes(2);

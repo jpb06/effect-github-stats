@@ -14,13 +14,15 @@ import { mockConsole } from '../../../../tests/mocks/console.mock';
 import { octokitMock } from '../../../../tests/mocks/octokit.mock';
 import { ApiRateLimitError } from '../../../errors/api-rate-limit.error';
 
+import { GetUserOrgsArgs } from './get-user-orgs';
+
 vi.mock('@octokit/core');
 mockConsole({
   warn: vi.fn(),
 });
 
 describe('getUserOrgs effect', () => {
-  const username = 'yolo';
+  const args: GetUserOrgsArgs = { username: 'yolo' };
 
   afterEach(() => {
     vi.resetAllMocks();
@@ -33,7 +35,7 @@ describe('getUserOrgs effect', () => {
 
     const { getUserOrgs } = await import('./get-user-orgs');
 
-    const result = await Effect.runPromise(getUserOrgs(username));
+    const result = await Effect.runPromise(getUserOrgs(args));
 
     expect(result).toStrictEqual(mockData);
   });
@@ -44,7 +46,7 @@ describe('getUserOrgs effect', () => {
     const { getUserOrgs } = await import('./get-user-orgs');
 
     const result = await Effect.runPromise(
-      pipe(getUserOrgs(username), Effect.flip),
+      pipe(getUserOrgs(args), Effect.flip),
     );
 
     expect(result).toBeInstanceOf(GithubApiError);
@@ -58,7 +60,7 @@ describe('getUserOrgs effect', () => {
     const { getUserOrgs } = await import('./get-user-orgs');
 
     const effect = delayEffectAndFlip(
-      getUserOrgs(username),
+      getUserOrgs({ ...args, retryCount: 3 }),
       Duration.seconds(80),
     );
     const result = await Effect.runPromise(effect);
@@ -76,7 +78,10 @@ describe('getUserOrgs effect', () => {
     });
 
     const { getUserOrgs } = await import('./get-user-orgs');
-    const effect = delayEffect(getUserOrgs(username), Duration.seconds(40));
+    const effect = delayEffect(
+      getUserOrgs({ ...args, retryCount: 3 }),
+      Duration.seconds(40),
+    );
     const result = await Effect.runPromise(effect);
 
     expect(console.warn).toHaveBeenCalledTimes(2);
