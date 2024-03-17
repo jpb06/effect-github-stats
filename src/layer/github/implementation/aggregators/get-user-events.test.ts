@@ -7,18 +7,16 @@ import { mockConsole } from '../../../../tests/mocks/console.mock';
 import { octokitMock } from '../../../../tests/mocks/octokit.mock';
 import { GithubApiError } from '../../../errors/github-api.error';
 
-import { GetPullRequestReviewsArgs } from './get-pull-request-reviews';
+import { GetUserEventsArgs } from './get-user-events';
 
 vi.mock('@octokit/core');
 mockConsole({
   warn: vi.fn(),
 });
 
-describe('getPullRequestReviews effect', () => {
-  const args: GetPullRequestReviewsArgs = {
-    owner: 'cool',
-    repo: 'yolo',
-    pullNumber: 1,
+describe('getUserEvents effect', () => {
+  const args: GetUserEventsArgs = {
+    username: 'cool',
   };
 
   beforeEach(() => {
@@ -32,11 +30,9 @@ describe('getPullRequestReviews effect', () => {
       ...octokitRequestResponseHeaders(count),
     });
 
-    const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
-    );
+    const { getUserEvents } = await import('./get-user-events');
 
-    const result = await Effect.runPromise(getPullRequestReviews(args));
+    const result = await Effect.runPromise(getUserEvents(args));
 
     expect(result).toStrictEqual(Array(count).fill(mockData).flat());
     expect(mock).toHaveBeenCalledTimes(count);
@@ -48,11 +44,9 @@ describe('getPullRequestReviews effect', () => {
       headers: {},
     });
 
-    const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
-    );
+    const { getUserEvents } = await import('./get-user-events');
 
-    const result = await Effect.runPromise(getPullRequestReviews(args));
+    const result = await Effect.runPromise(getUserEvents(args));
 
     expect(result).toStrictEqual(mockData);
     expect(mock).toHaveBeenCalledTimes(1);
@@ -67,12 +61,10 @@ describe('getPullRequestReviews effect', () => {
       },
     );
 
-    const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
-    );
+    const { getUserEvents } = await import('./get-user-events');
 
     const result = await Effect.runPromise(
-      pipe(getPullRequestReviews(args), Effect.flip),
+      pipe(getUserEvents(args), Effect.flip),
     );
 
     expect(result).toBeInstanceOf(GithubApiError);

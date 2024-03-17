@@ -7,18 +7,17 @@ import { mockConsole } from '../../../../tests/mocks/console.mock';
 import { octokitMock } from '../../../../tests/mocks/octokit.mock';
 import { GithubApiError } from '../../../errors/github-api.error';
 
-import { GetPullRequestReviewsArgs } from './get-pull-request-reviews';
+import { GetRepoPullRequestsArgs } from './get-repo-pull-requests';
 
 vi.mock('@octokit/core');
 mockConsole({
   warn: vi.fn(),
 });
 
-describe('getPullRequestReviews effect', () => {
-  const args: GetPullRequestReviewsArgs = {
+describe('getRepoPullRequests effect', () => {
+  const args: GetRepoPullRequestsArgs = {
     owner: 'cool',
     repo: 'yolo',
-    pullNumber: 1,
   };
 
   beforeEach(() => {
@@ -32,11 +31,9 @@ describe('getPullRequestReviews effect', () => {
       ...octokitRequestResponseHeaders(count),
     });
 
-    const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
-    );
+    const { getRepoPullRequests } = await import('./get-repo-pull-requests');
 
-    const result = await Effect.runPromise(getPullRequestReviews(args));
+    const result = await Effect.runPromise(getRepoPullRequests(args));
 
     expect(result).toStrictEqual(Array(count).fill(mockData).flat());
     expect(mock).toHaveBeenCalledTimes(count);
@@ -48,11 +45,9 @@ describe('getPullRequestReviews effect', () => {
       headers: {},
     });
 
-    const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
-    );
+    const { getRepoPullRequests } = await import('./get-repo-pull-requests');
 
-    const result = await Effect.runPromise(getPullRequestReviews(args));
+    const result = await Effect.runPromise(getRepoPullRequests(args));
 
     expect(result).toStrictEqual(mockData);
     expect(mock).toHaveBeenCalledTimes(1);
@@ -67,12 +62,10 @@ describe('getPullRequestReviews effect', () => {
       },
     );
 
-    const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
-    );
+    const { getRepoPullRequests } = await import('./get-repo-pull-requests');
 
     const result = await Effect.runPromise(
-      pipe(getPullRequestReviews(args), Effect.flip),
+      pipe(getRepoPullRequests(args), Effect.flip),
     );
 
     expect(result).toBeInstanceOf(GithubApiError);
