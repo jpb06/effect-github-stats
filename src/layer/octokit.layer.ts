@@ -1,51 +1,69 @@
 import { tapLayer } from './effects/tapLayer.effect';
 import { defaultConcurrency } from './github/implementation/constants/default-concurrency.constant';
+import { defaultRetryCount } from './github/implementation/constants/default-retry-count.constant';
 import { OctokitLayerContext as Context } from './octokit.context';
+import { FlowOptions } from './types/flow-options.type';
 
-const concurrencyDefault = { concurrency: defaultConcurrency };
+const flowOptionsDefault: FlowOptions = {
+  concurrency: defaultConcurrency,
+  retryCount: defaultRetryCount,
+};
+
+export interface RepoArgs {
+  owner: string;
+  name: string;
+}
 
 export const OctokitLayer = {
   user: (username: string) => ({
-    profile: tapLayer(Context, ({ getUserProfile }) =>
-      getUserProfile(username),
-    ),
-    orgs: tapLayer(Context, ({ getUserOrgs }) => getUserOrgs(username)),
-    events: ({ concurrency } = concurrencyDefault) =>
-      tapLayer(Context, ({ getUserEvents }) =>
-        getUserEvents({ username, concurrency }),
+    profile: (options: FlowOptions = flowOptionsDefault) =>
+      tapLayer(Context, ({ getUserProfile }) =>
+        getUserProfile({ username, ...options }),
       ),
-    repos: ({ concurrency } = concurrencyDefault) =>
+    orgs: (options: FlowOptions = flowOptionsDefault) =>
+      tapLayer(Context, ({ getUserOrgs }) =>
+        getUserOrgs({ username, ...options }),
+      ),
+    events: (options: FlowOptions = flowOptionsDefault) =>
+      tapLayer(Context, ({ getUserEvents }) =>
+        getUserEvents({ username, ...options }),
+      ),
+    repos: (options: FlowOptions = flowOptionsDefault) =>
       tapLayer(Context, ({ getRepositories }) =>
-        getRepositories({ concurrency, target: username, type: 'user' }),
+        getRepositories({ target: username, type: 'user', ...options }),
       ),
   }),
   org: (owner: string) => ({
-    repos: ({ concurrency } = concurrencyDefault) =>
+    repos: (options: FlowOptions = flowOptionsDefault) =>
       tapLayer(Context, ({ getRepositories }) =>
-        getRepositories({ concurrency, target: owner, type: 'org' }),
+        getRepositories({ target: owner, type: 'org', ...options }),
       ),
   }),
-  repo: ({ owner, name }: { owner: string; name: string }) => ({
-    issues: ({ concurrency } = concurrencyDefault) =>
+  repo: ({ owner, name }: RepoArgs) => ({
+    issues: (options: FlowOptions = flowOptionsDefault) =>
       tapLayer(Context, ({ getRepoIssues }) =>
-        getRepoIssues({ concurrency, owner, repo: name }),
+        getRepoIssues({ owner, repo: name, ...options }),
       ),
     issue: (number: number) =>
       tapLayer(Context, ({ getIssue }) =>
         getIssue({ owner, repo: name, number }),
       ),
-    pulls: ({ concurrency } = concurrencyDefault) =>
+    pulls: (options: FlowOptions = flowOptionsDefault) =>
       tapLayer(Context, ({ getRepoPullRequests }) =>
-        getRepoPullRequests({ concurrency, owner, repo: name }),
+        getRepoPullRequests({ owner, repo: name, ...options }),
       ),
     pull: (number: number) => ({
-      reviews: ({ concurrency } = concurrencyDefault) =>
+      details: (options: FlowOptions = flowOptionsDefault) =>
+        tapLayer(Context, ({ getPullRequest }) =>
+          getPullRequest({ owner, repo: name, number, ...options }),
+        ),
+      reviews: (options: FlowOptions = flowOptionsDefault) =>
         tapLayer(Context, ({ getPullRequestReviews }) =>
           getPullRequestReviews({
-            concurrency,
             owner,
             repo: name,
             pullNumber: number,
+            ...options,
           }),
         ),
     }),

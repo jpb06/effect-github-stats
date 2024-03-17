@@ -72,7 +72,7 @@ describe('getRepoPullRequestsPage effect', () => {
     );
 
     const effect = delayEffectAndFlip(
-      getRepoPullRequestsPage(args),
+      getRepoPullRequestsPage({ ...args, retryCount: 3 }),
       Duration.seconds(80),
     );
     const result = await Effect.runPromise(effect);
@@ -94,7 +94,7 @@ describe('getRepoPullRequestsPage effect', () => {
     );
 
     const effect = delayEffect(
-      getRepoPullRequestsPage(args),
+      getRepoPullRequestsPage({ ...args, retryCount: 3 }),
       Duration.seconds(40),
     );
     const result = await Effect.runPromise(effect);

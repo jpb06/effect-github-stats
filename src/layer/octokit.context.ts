@@ -24,19 +24,29 @@ import {
   GetIssueArgs,
   IssueResult,
 } from './github/implementation/primitives/get-issue';
-import { UserOrgsResult } from './github/implementation/primitives/get-user-orgs';
-import { UserProfileResult } from './github/implementation/primitives/get-user-profile';
+import {
+  GetPullRequestArgs,
+  PullRequestResult,
+} from './github/implementation/primitives/get-pull-request';
+import {
+  GetUserOrgsArgs,
+  UserOrgsResult,
+} from './github/implementation/primitives/get-user-orgs';
+import {
+  GetUserProfileArgs,
+  UserProfileResult,
+} from './github/implementation/primitives/get-user-profile';
 
 export interface Octokit {
   readonly getUserProfile: (
-    username: string,
+    args: GetUserProfileArgs,
   ) => Effect.Effect<
     UserProfileResult,
     GithubApiError | ApiRateLimitError | ConfigError.ConfigError,
     never
   >;
   readonly getUserOrgs: (
-    username: string,
+    args: GetUserOrgsArgs,
   ) => Effect.Effect<
     UserOrgsResult,
     GithubApiError | ApiRateLimitError | ConfigError.ConfigError,
@@ -74,6 +84,13 @@ export interface Octokit {
     args: GetIssueArgs,
   ) => Effect.Effect<
     IssueResult,
+    GithubApiError | ApiRateLimitError | ConfigError.ConfigError,
+    never
+  >;
+  readonly getPullRequest: (
+    args: GetPullRequestArgs,
+  ) => Effect.Effect<
+    PullRequestResult,
     GithubApiError | ApiRateLimitError | ConfigError.ConfigError,
     never
   >;

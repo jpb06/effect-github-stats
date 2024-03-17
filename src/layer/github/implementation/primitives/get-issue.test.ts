@@ -61,7 +61,10 @@ describe('getIssue effect', () => {
 
     const { getIssue } = await import('./get-issue');
 
-    const effect = delayEffectAndFlip(getIssue(args), Duration.seconds(80));
+    const effect = delayEffectAndFlip(
+      getIssue({ ...args, retryCount: 3 }),
+      Duration.seconds(80),
+    );
     const result = await Effect.runPromise(effect);
 
     expect(result).toBeInstanceOf(ApiRateLimitError);
@@ -77,7 +80,10 @@ describe('getIssue effect', () => {
     });
 
     const { getIssue } = await import('./get-issue');
-    const effect = delayEffect(getIssue(args), Duration.seconds(40));
+    const effect = delayEffect(
+      getIssue({ ...args, retryCount: 3 }),
+      Duration.seconds(40),
+    );
     const result = await Effect.runPromise(effect);
 
     expect(console.warn).toHaveBeenCalledTimes(2);

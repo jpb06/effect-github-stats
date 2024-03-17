@@ -1,6 +1,7 @@
 import { Duration, Effect, pipe } from 'effect';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { GithubApiError } from '../../../..';
 import { expectApiRateLimitMessages } from '../../../../tests/assertions/api-rate-limite-message.assert';
 import {
   delayEffect,
@@ -12,46 +13,44 @@ import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octok
 import { mockConsole } from '../../../../tests/mocks/console.mock';
 import { octokitMock } from '../../../../tests/mocks/octokit.mock';
 import { ApiRateLimitError } from '../../../errors/api-rate-limit.error';
-import { GithubApiError } from '../../../errors/github-api.error';
 
-import { GetOrgReposPageArgs } from './get-org-repos-page';
+import { GetPullRequestArgs } from './get-pull-request';
 
 vi.mock('@octokit/core');
 mockConsole({
   warn: vi.fn(),
 });
 
-describe('getOrgReposPage effect', () => {
-  const args: GetOrgReposPageArgs = {
-    org: 'cool',
-    page: 1,
+describe('getIssue effect', () => {
+  const args: GetPullRequestArgs = {
+    owner: 'cool',
+    repo: 'cool',
+    number: 1,
   };
 
-  beforeEach(() => {
-    vi.clearAllMocks();
+  afterEach(() => {
+    vi.resetAllMocks();
   });
 
   it('should retun data with links', async () => {
-    await octokitMock.requestOnce({
+    octokitMock.requestOnce({
       data: mockData,
-      ...octokitRequestResponseHeaders(25),
     });
 
-    const { getOrgReposPage } = await import('./get-org-repos-page');
+    const { getPullRequest } = await import('./get-pull-request');
 
-    const result = await Effect.runPromise(getOrgReposPage(args));
+    const result = await Effect.runPromise(getPullRequest(args));
 
-    expect(result.data).toStrictEqual(mockData);
-    expect(result.links).toStrictEqual({ next: 2, last: 25 });
+    expect(result).toStrictEqual(mockData);
   });
 
   it('should fail with an Octokit request error', async () => {
-    await octokitMock.requestFail(new Error('Oh no'));
+    octokitMock.requestFail(new GithubApiError({ cause: 'Oh no' }));
 
-    const { getOrgReposPage } = await import('./get-org-repos-page');
+    const { getPullRequest } = await import('./get-pull-request');
 
     const result = await Effect.runPromise(
-      pipe(getOrgReposPage(args), Effect.flip),
+      pipe(getPullRequest(args), Effect.flip),
     );
 
     expect(result).toBeInstanceOf(GithubApiError);
@@ -62,10 +61,10 @@ describe('getOrgReposPage effect', () => {
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFail(error);
 
-    const { getOrgReposPage } = await import('./get-org-repos-page');
+    const { getPullRequest } = await import('./get-pull-request');
 
     const effect = delayEffectAndFlip(
-      getOrgReposPage({ ...args, retryCount: 3 }),
+      getPullRequest({ ...args, retryCount: 3 }),
       Duration.seconds(80),
     );
     const result = await Effect.runPromise(effect);
@@ -82,16 +81,14 @@ describe('getOrgReposPage effect', () => {
       ...octokitRequestResponseHeaders(25),
     });
 
-    const { getOrgReposPage } = await import('./get-org-repos-page');
-
+    const { getPullRequest } = await import('./get-pull-request');
     const effect = delayEffect(
-      getOrgReposPage({ ...args, retryCount: 3 }),
+      getPullRequest({ ...args, retryCount: 3 }),
       Duration.seconds(40),
     );
     const result = await Effect.runPromise(effect);
 
     expect(console.warn).toHaveBeenCalledTimes(2);
-    expect(result.data).toStrictEqual(mockData);
-    expect(result.links).toStrictEqual({ next: 2, last: 25 });
+    expect(result).toStrictEqual(mockData);
   });
 });
