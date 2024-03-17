@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { retryWarningMessage } from '../github/implementation/constants/retry-warning-message.constant';
 
 import { ApiRateLimitError } from './api-rate-limit.error';
 import { GithubApiError } from './github-api.error';
@@ -6,23 +6,13 @@ import { GithubApiError } from './github-api.error';
 interface WithMaybeRetryAfter {
   response?: { headers?: { 'retry-after'?: number } };
 }
-interface WithRequestUrl {
-  request: { url: string };
-}
 
 export const handleOctokitRequestError = (e: unknown) => {
   const retryAfter = (e as WithMaybeRetryAfter)?.response?.headers?.[
     'retry-after'
   ];
   if (retryAfter) {
-    console.warn(
-      chalk.hex('#FFA500')(
-        `⚠️ Rate limit error on '${(e as WithRequestUrl).request.url.replace(
-          'https://api.github.com',
-          '',
-        )}' ⏳ retrying in ${retryAfter} seconds.`,
-      ),
-    );
+    console.warn(retryWarningMessage(e, retryAfter));
 
     return new ApiRateLimitError({
       retryAfter,
