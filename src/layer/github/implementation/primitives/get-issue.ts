@@ -4,23 +4,16 @@ import { EffectResultSuccess } from '../../../../types/effect.types';
 import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
 import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
 import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
-import { FlowOptions } from '../../../types/flow-options.type';
-import { defaultRetryCount } from '../constants/default-retry-count.constant';
 
-export interface GetIssueArgs extends Pick<FlowOptions, 'retryCount'> {
+export interface GetIssueArgs {
   owner: string;
   repo: string;
   number: number;
 }
 
-export const getIssue = ({
-  owner,
-  repo,
-  number,
-  retryCount = defaultRetryCount,
-}: GetIssueArgs) =>
+export const getIssue = ({ owner, repo, number }: GetIssueArgs) =>
   Effect.withSpan(__filename, {
-    attributes: { owner, repo, number, retryCount },
+    attributes: { owner, repo, number },
   })(
     pipe(
       githubSourceAnalysisProvider,
@@ -38,7 +31,7 @@ export const getIssue = ({
               ),
             catch: handleOctokitRequestError,
           }),
-          Effect.retry(retryAfterSchedule(retryCount)),
+          Effect.retry(retryAfterSchedule),
         ),
       ),
       Effect.map((response) => response.data),

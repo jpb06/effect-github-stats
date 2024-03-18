@@ -2,14 +2,14 @@ import { Effect } from 'effect';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { arrayRange } from '../../../../util/array-range.util';
-import { FlowOptions } from '../../../types/flow-options.type';
 import { defaultConcurrency } from '../constants/default-concurrency.constant';
 import { getPullRequestReviewsPage } from '../paging/get-pull-request-reviews-page';
 
-export interface GetPullRequestReviewsArgs extends FlowOptions {
+export interface GetPullRequestReviewsArgs {
   owner: string;
   repo: string;
   pullNumber: number;
+  concurrency?: number;
 }
 
 const getPage = (args: GetPullRequestReviewsArgs) => (page: number) =>

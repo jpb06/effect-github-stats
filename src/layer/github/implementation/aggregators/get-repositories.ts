@@ -3,12 +3,11 @@ import { match } from 'ts-pattern';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { arrayRange } from '../../../../util/array-range.util';
-import { FlowOptions } from '../../../types/flow-options.type';
 import { defaultConcurrency } from '../constants/default-concurrency.constant';
 import { getOrgReposPage } from '../paging/get-org-repos-page';
 import { getUserReposPage } from '../paging/get-user-repos-page';
 
-export interface GetRepositoriesArgs extends FlowOptions {
+export interface GetRepositoriesArgs {
   target: string;
   type: 'org' | 'user';
   concurrency?: number;

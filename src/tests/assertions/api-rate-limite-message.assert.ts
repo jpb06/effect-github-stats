@@ -9,17 +9,13 @@ export const expectApiRateLimitMessages = (
   error: WithRequestUrl,
   retryDelay: number,
 ) => {
-  expect(console.warn).toHaveBeenCalledTimes(3);
+  expect(console.warn).toHaveBeenCalledTimes(2);
   expect(console.warn).toHaveBeenNthCalledWith(
     1,
     retryWarningMessage(error, retryDelay),
   );
   expect(console.warn).toHaveBeenNthCalledWith(
     2,
-    retryWarningMessage(error, retryDelay),
-  );
-  expect(console.warn).toHaveBeenNthCalledWith(
-    3,
     retryWarningMessage(error, retryDelay),
   );
 };
