@@ -2,8 +2,7 @@ import { Effect } from 'effect';
 import { match } from 'ts-pattern';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
-import { arrayRange } from '../../../../util/array-range.util';
-import { defaultConcurrency } from '../constants/default-concurrency.constant';
+import { getAllPages } from '../generic/get-all-pages.effect';
 import { getOrgReposPage } from '../paging/get-org-repos-page';
 import { getUserReposPage } from '../paging/get-user-repos-page';
 
@@ -32,21 +31,8 @@ const getPage =
       .exhaustive();
 
 export const getRepositories = (args: GetRepositoriesArgs) =>
-  Effect.withSpan(__filename, { attributes: { ...args } })(
-    Effect.gen(function* (_) {
-      const firstPage = yield* _(getPage(args)(1));
-      if (firstPage.links?.last === undefined) {
-        return firstPage.data;
-      }
-
-      const pagesResults = yield* _(
-        Effect.all(arrayRange(2, firstPage.links.last).map(getPage(args)), {
-          concurrency: args.concurrency ?? defaultConcurrency,
-        }),
-      );
-
-      return [...firstPage.data, ...pagesResults.flatMap((r) => r.data)];
-    }),
-  );
+  Effect.withSpan(__filename, {
+    attributes: { ...args },
+  })(getAllPages(getPage, args));
 
 export type RepositoriesResult = EffectResultSuccess<typeof getRepositories>;
