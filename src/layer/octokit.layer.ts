@@ -57,5 +57,3 @@ export const OctokitLayer = {
     }),
   }),
 };
-
-OctokitLayer.repo({ owner: 'jpb06', name: 'effect' }).pull(1).reviews();
