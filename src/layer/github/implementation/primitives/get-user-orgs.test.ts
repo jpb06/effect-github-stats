@@ -14,15 +14,13 @@ import { mockConsole } from '../../../../tests/mocks/console.mock';
 import { octokitMock } from '../../../../tests/mocks/octokit.mock';
 import { ApiRateLimitError } from '../../../errors/api-rate-limit.error';
 
-import { GetUserOrgsArgs } from './get-user-orgs';
-
 vi.mock('@octokit/core');
 mockConsole({
   warn: vi.fn(),
 });
 
 describe('getUserOrgs effect', () => {
-  const args: GetUserOrgsArgs = { username: 'yolo' };
+  const username = 'yolo';
 
   afterEach(() => {
     vi.resetAllMocks();
@@ -35,7 +33,7 @@ describe('getUserOrgs effect', () => {
 
     const { getUserOrgs } = await import('./get-user-orgs');
 
-    const result = await Effect.runPromise(getUserOrgs(args));
+    const result = await Effect.runPromise(getUserOrgs(username));
 
     expect(result).toStrictEqual(mockData);
   });
@@ -46,7 +44,7 @@ describe('getUserOrgs effect', () => {
     const { getUserOrgs } = await import('./get-user-orgs');
 
     const result = await Effect.runPromise(
-      pipe(getUserOrgs(args), Effect.flip),
+      pipe(getUserOrgs(username), Effect.flip),
     );
 
     expect(result).toBeInstanceOf(GithubApiError);
@@ -60,7 +58,7 @@ describe('getUserOrgs effect', () => {
     const { getUserOrgs } = await import('./get-user-orgs');
 
     const effect = delayEffectAndFlip(
-      getUserOrgs({ ...args, retryCount: 3 }),
+      getUserOrgs(username),
       Duration.seconds(80),
     );
     const result = await Effect.runPromise(effect);
@@ -69,7 +67,7 @@ describe('getUserOrgs effect', () => {
     expectApiRateLimitMessages(error, retryDelay);
   });
 
-  it('should retry two times and then succeed', async () => {
+  it('should retry one time and then succeed', async () => {
     const retryDelay = 20;
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFailAndThenSucceed(error, {
@@ -78,13 +76,10 @@ describe('getUserOrgs effect', () => {
     });
 
     const { getUserOrgs } = await import('./get-user-orgs');
-    const effect = delayEffect(
-      getUserOrgs({ ...args, retryCount: 3 }),
-      Duration.seconds(40),
-    );
+    const effect = delayEffect(getUserOrgs(username), Duration.seconds(40));
     const result = await Effect.runPromise(effect);
 
-    expect(console.warn).toHaveBeenCalledTimes(2);
+    expect(console.warn).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual(mockData);
   });
 });

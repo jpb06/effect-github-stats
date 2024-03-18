@@ -2,11 +2,10 @@ import { Effect } from 'effect';
 
 import { EffectResultSuccess } from '../../../..';
 import { arrayRange } from '../../../../util/array-range.util';
-import { FlowOptions } from '../../../types/flow-options.type';
 import { defaultConcurrency } from '../constants/default-concurrency.constant';
 import { getUserEventsPage } from '../paging/get-user-events-page';
 
-export interface GetUserEventsArgs extends FlowOptions {
+export interface GetUserEventsArgs {
   username: string;
   concurrency?: number;
 }

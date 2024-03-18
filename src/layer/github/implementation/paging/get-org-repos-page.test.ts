@@ -57,7 +57,7 @@ describe('getOrgReposPage effect', () => {
     expect(result).toBeInstanceOf(GithubApiError);
   });
 
-  it('should retry three times if api rate limit is reached', async () => {
+  it('should fail if an api rate limit error', async () => {
     const retryDelay = 20;
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFail(error);
@@ -65,8 +65,8 @@ describe('getOrgReposPage effect', () => {
     const { getOrgReposPage } = await import('./get-org-repos-page');
 
     const effect = delayEffectAndFlip(
-      getOrgReposPage({ ...args, retryCount: 3 }),
-      Duration.seconds(80),
+      getOrgReposPage(args),
+      Duration.seconds(40),
     );
     const result = await Effect.runPromise(effect);
 
@@ -74,7 +74,7 @@ describe('getOrgReposPage effect', () => {
     expectApiRateLimitMessages(error, retryDelay);
   });
 
-  it('should retry two times and then succeed', async () => {
+  it('should retry one time and then succeed', async () => {
     const retryDelay = 20;
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFailAndThenSucceed(error, {
@@ -84,13 +84,10 @@ describe('getOrgReposPage effect', () => {
 
     const { getOrgReposPage } = await import('./get-org-repos-page');
 
-    const effect = delayEffect(
-      getOrgReposPage({ ...args, retryCount: 3 }),
-      Duration.seconds(40),
-    );
+    const effect = delayEffect(getOrgReposPage(args), Duration.seconds(40));
     const result = await Effect.runPromise(effect);
 
-    expect(console.warn).toHaveBeenCalledTimes(2);
+    expect(console.warn).toHaveBeenCalledTimes(1);
     expect(result.data).toStrictEqual(mockData);
     expect(result.links).toStrictEqual({ next: 2, last: 25 });
   });

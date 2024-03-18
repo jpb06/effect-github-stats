@@ -118,15 +118,7 @@ You can specify the `concurrency` parameter on calls doing several requests in p
 
 ```typescript
 // Will fetch the first page and then 100 pages concurrently
-github.repo(repo).pulls({
-  concurrency: 100
-}),
+github.repo(repo).pulls(100),
 ```
 
 Note that github api enforces [api rate limits](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#dealing-with-secondary-rate-limits). Getting too many results concurrently will cause an api rate limit. In that case, a warning will be displayed and the call will be attempted again after the time window provided by github api (typically 60 seconds).
-
-#### 🧿 retryCount
-
-> Default: `1`
-
-You can specify `retryCount` to define how many times a call that cause an api rate limit should be made again.

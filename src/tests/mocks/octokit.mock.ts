@@ -70,7 +70,6 @@ export const octokitMock = {
         ({
           request: requestMock
             .mockRejectedValueOnce(error)
-            .mockRejectedValueOnce(error)
             .mockResolvedValueOnce(data) as unknown as RequestInterface<object>,
         }) as Octokit,
     );

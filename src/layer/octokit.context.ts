@@ -28,25 +28,19 @@ import {
   GetPullRequestArgs,
   PullRequestResult,
 } from './github/implementation/primitives/get-pull-request';
-import {
-  GetUserOrgsArgs,
-  UserOrgsResult,
-} from './github/implementation/primitives/get-user-orgs';
-import {
-  GetUserProfileArgs,
-  UserProfileResult,
-} from './github/implementation/primitives/get-user-profile';
+import { UserOrgsResult } from './github/implementation/primitives/get-user-orgs';
+import { UserProfileResult } from './github/implementation/primitives/get-user-profile';
 
 export interface Octokit {
   readonly getUserProfile: (
-    args: GetUserProfileArgs,
+    username: string,
   ) => Effect.Effect<
     UserProfileResult,
     GithubApiError | ApiRateLimitError | ConfigError.ConfigError,
     never
   >;
   readonly getUserOrgs: (
-    args: GetUserOrgsArgs,
+    username: string,
   ) => Effect.Effect<
     UserOrgsResult,
     GithubApiError | ApiRateLimitError | ConfigError.ConfigError,

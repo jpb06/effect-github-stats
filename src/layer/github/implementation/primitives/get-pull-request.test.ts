@@ -56,7 +56,7 @@ describe('getIssue effect', () => {
     expect(result).toBeInstanceOf(GithubApiError);
   });
 
-  it('should retry three times if api rate limit is reached', async () => {
+  it('should fail if an api rate limit error', async () => {
     const retryDelay = 20;
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFail(error);
@@ -64,8 +64,8 @@ describe('getIssue effect', () => {
     const { getPullRequest } = await import('./get-pull-request');
 
     const effect = delayEffectAndFlip(
-      getPullRequest({ ...args, retryCount: 3 }),
-      Duration.seconds(80),
+      getPullRequest(args),
+      Duration.seconds(40),
     );
     const result = await Effect.runPromise(effect);
 
@@ -73,7 +73,7 @@ describe('getIssue effect', () => {
     expectApiRateLimitMessages(error, retryDelay);
   });
 
-  it('should retry two times and then succeed', async () => {
+  it('should retry one time and then succeed', async () => {
     const retryDelay = 20;
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFailAndThenSucceed(error, {
@@ -82,13 +82,11 @@ describe('getIssue effect', () => {
     });
 
     const { getPullRequest } = await import('./get-pull-request');
-    const effect = delayEffect(
-      getPullRequest({ ...args, retryCount: 3 }),
-      Duration.seconds(40),
-    );
+
+    const effect = delayEffect(getPullRequest(args), Duration.seconds(40));
     const result = await Effect.runPromise(effect);
 
-    expect(console.warn).toHaveBeenCalledTimes(2);
+    expect(console.warn).toHaveBeenCalledTimes(1);
     expect(result).toStrictEqual(mockData);
   });
 });

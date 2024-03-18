@@ -5,28 +5,17 @@ import { handleOctokitRequestError } from '../../../errors/handle-octokit-reques
 import { parseLink } from '../../../logic/parse-link.logic';
 import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
 import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
-import { FlowOptions } from '../../../types/flow-options.type';
-import { defaultRetryCount } from '../constants/default-retry-count.constant';
 
-export interface GetRepoPullRequestsPageArgs
-  extends Pick<FlowOptions, 'retryCount'> {
+export interface GetRepoPullRequestsPageArgs {
   owner: string;
   repo: string;
   page: number;
 }
 
-export const getRepoPullRequestsPage = ({
-  owner,
-  repo,
-  page,
-  retryCount = defaultRetryCount,
-}: GetRepoPullRequestsPageArgs) =>
+export const getRepoPullRequestsPage = (args: GetRepoPullRequestsPageArgs) =>
   Effect.withSpan(__filename, {
     attributes: {
-      owner,
-      repo,
-      page,
-      retryCount,
+      ...args,
     },
   })(
     pipe(
@@ -36,15 +25,13 @@ export const getRepoPullRequestsPage = ({
           Effect.tryPromise({
             try: () =>
               octokit.request('GET /repos/{owner}/{repo}/pulls', {
-                owner,
-                repo,
-                page,
+                ...args,
                 state: 'all',
                 per_page: 100,
               }),
             catch: handleOctokitRequestError,
           }),
-          Effect.retry(retryAfterSchedule(retryCount)),
+          Effect.retry(retryAfterSchedule),
         ),
       ),
       Effect.map((response) => ({

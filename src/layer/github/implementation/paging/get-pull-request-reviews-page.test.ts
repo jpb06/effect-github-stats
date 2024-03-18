@@ -63,7 +63,7 @@ describe('getPullRequestReviewsPage effect', () => {
     expect(result).toBeInstanceOf(GithubApiError);
   });
 
-  it('should retry three times if api rate limit is reached', async () => {
+  it('should fail if an api rate limit error', async () => {
     const retryDelay = 20;
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFail(error);
@@ -73,8 +73,8 @@ describe('getPullRequestReviewsPage effect', () => {
     );
 
     const effect = delayEffectAndFlip(
-      getPullRequestReviewsPage({ ...args, retryCount: 3 }),
-      Duration.seconds(80),
+      getPullRequestReviewsPage(args),
+      Duration.seconds(40),
     );
     const result = await Effect.runPromise(effect);
 
@@ -82,7 +82,7 @@ describe('getPullRequestReviewsPage effect', () => {
     expectApiRateLimitMessages(error, retryDelay);
   });
 
-  it('should retry two times and then succeed', async () => {
+  it('should retry one time and then succeed', async () => {
     const retryDelay = 20;
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFailAndThenSucceed(error, {
@@ -95,12 +95,12 @@ describe('getPullRequestReviewsPage effect', () => {
     );
 
     const effect = delayEffect(
-      getPullRequestReviewsPage({ ...args, retryCount: 3 }),
+      getPullRequestReviewsPage(args),
       Duration.seconds(40),
     );
     const result = await Effect.runPromise(effect);
 
-    expect(console.warn).toHaveBeenCalledTimes(2);
+    expect(console.warn).toHaveBeenCalledTimes(1);
     expect(result.data).toStrictEqual(mockData);
     expect(result.links).toStrictEqual({ next: 2, last: 25 });
   });
