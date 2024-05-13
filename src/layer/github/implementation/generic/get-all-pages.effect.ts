@@ -24,12 +24,11 @@ export const getAllPages = <
   getPage: GetPage<TArgs, TData, TError>,
   args: TArgs,
 ) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-all-pages', {
     attributes: { ...args },
   })(
     Effect.gen(function* (_) {
       const firstPage = yield* _(getPage(args)(1));
-
       if (firstPage.links?.last === undefined) {
         return firstPage.data;
       }

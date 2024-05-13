@@ -1,0 +1,11 @@
+import { Octokit } from '@octokit/core';
+import { type Endpoints } from '@octokit/types';
+import { RequestParameters } from '@octokit/types/dist-types/RequestParameters';
+
+export const octokitRequest =
+  (octokit: Octokit) =>
+  <E extends keyof Endpoints>(
+    route: E,
+    options?: Endpoints[E]['parameters'] & RequestParameters,
+  ): Promise<Endpoints[E]['response']> =>
+    octokit.request<E>(route, options as never);

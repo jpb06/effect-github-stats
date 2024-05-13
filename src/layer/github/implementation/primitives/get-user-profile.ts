@@ -6,7 +6,7 @@ import { githubSourceAnalysisProvider } from '../../../providers/github-source-a
 import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
 
 export const getUserProfile = (username: string) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-user-profile', {
     attributes: { username },
   })(
     pipe(

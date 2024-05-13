@@ -31,7 +31,7 @@ const getPage =
       .exhaustive();
 
 export const getRepositories = (args: GetRepositoriesArgs) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-repositories', {
     attributes: { ...args },
   })(getAllPages(getPage, args));
 

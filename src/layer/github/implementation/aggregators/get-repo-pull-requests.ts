@@ -17,7 +17,7 @@ const getPage = (args: GetRepoPullRequestsArgs) => (page: number) =>
   });
 
 export const getRepoPullRequests = (args: GetRepoPullRequestsArgs) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-repo-pull-requests', {
     attributes: { ...args },
   })(getAllPages(getPage, args));
 
