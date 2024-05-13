@@ -18,7 +18,7 @@ const getPage = (args: GetPullRequestReviewsArgs) => (page: number) =>
   });
 
 export const getPullRequestReviews = (args: GetPullRequestReviewsArgs) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-pull-request-reviews', {
     attributes: { ...args },
   })(getAllPages(getPage, args));
 

@@ -17,7 +17,7 @@ const getPage = (args: GetRepoIssuesArgs) => (page: number) =>
   });
 
 export const getRepoIssues = (args: GetRepoIssuesArgs) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-repo-issues', {
     attributes: { ...args },
   })(getAllPages(getPage, args));
 

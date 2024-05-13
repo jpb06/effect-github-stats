@@ -1,10 +1,5 @@
-import { pipe, Effect } from 'effect';
-
 import { EffectResultSuccess } from '../../../../types/effect.types';
-import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
-import { parseLink } from '../../../logic/parse-link.logic';
-import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
-import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
+import { getOnePage } from '../generic/get-one-page/get-one-page.effect';
 
 export interface GetRepoPullRequestsPageArgs {
   owner: string;
@@ -13,33 +8,11 @@ export interface GetRepoPullRequestsPageArgs {
 }
 
 export const getRepoPullRequestsPage = (args: GetRepoPullRequestsPageArgs) =>
-  Effect.withSpan(__filename, {
-    attributes: {
-      ...args,
-    },
-  })(
-    pipe(
-      githubSourceAnalysisProvider,
-      Effect.flatMap((octokit) =>
-        pipe(
-          Effect.tryPromise({
-            try: () =>
-              octokit.request('GET /repos/{owner}/{repo}/pulls', {
-                ...args,
-                state: 'all',
-                per_page: 100,
-              }),
-            catch: handleOctokitRequestError,
-          }),
-          Effect.retry(retryAfterSchedule),
-        ),
-      ),
-      Effect.map((response) => ({
-        data: response.data,
-        links: parseLink(response),
-      })),
-    ),
-  );
+  getOnePage('get-repo-pull-requests-page', 'GET /repos/{owner}/{repo}/pulls', {
+    ...args,
+    state: 'all',
+    per_page: 100,
+  });
 
 export type RepoPullRequestsPageItems = EffectResultSuccess<
   typeof getRepoPullRequestsPage

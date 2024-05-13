@@ -16,7 +16,7 @@ const getPage = (args: GetUserEventsArgs) => (page: number) =>
   });
 
 export const getUserEvents = (args: GetUserEventsArgs) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-user-events', {
     attributes: { ...args },
   })(getAllPages(getPage, args));
 

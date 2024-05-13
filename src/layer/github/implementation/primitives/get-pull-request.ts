@@ -12,7 +12,7 @@ export interface GetPullRequestArgs {
 }
 
 export const getPullRequest = ({ owner, repo, number }: GetPullRequestArgs) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-pull-request', {
     attributes: { owner, repo, number },
   })(
     pipe(

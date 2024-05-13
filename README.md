@@ -54,6 +54,7 @@ const [profile, repos, orgs, events] = await Effect.runPromise(
         // Get user events
         OctokitLayer.user(username).events(),
       ],
+      // Fetch all these in parallel
       { concurrency: 'unbounded' },
     ),
     Effect.provide(OctokitLayerLive),
@@ -66,7 +67,7 @@ const [profile, repos, orgs, events] = await Effect.runPromise(
 ```typescript
 import { OctokitLayer, OctokitLayerLive } from 'effect-github-stats';
 
-const [profile, repos, orgs, events] = await Effect.runPromise(
+const orgs = await Effect.runPromise(
   pipe(
     // Get organization repos
     OctokitLayer.org('my-org').repos();
@@ -101,6 +102,7 @@ const [issues, pulls, issue34, pull5453, pull5453Reviews] =
           // Get pull request #5453 reviews
           OctokitLayer.repo(reactRepo).pull(5453).reviews(),
         ],
+        // Fetch all these in parallel
         { concurrency: 'unbounded' },
       ),
       Effect.provide(OctokitLayerLive),
@@ -121,4 +123,4 @@ You can specify the `concurrency` parameter on calls doing several requests in p
 github.repo(repo).pulls(100);
 ```
 
-Note that github api enforces [api rate limits](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#dealing-with-secondary-rate-limits). Getting too many results concurrently will cause an api rate limit. In that case, a warning will be displayed and the call will be attempted again after the time window provided by github api (typically 60 seconds).
+Note that github api enforces [api rate limits](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#dealing-with-secondary-rate-limits). Fetching too many results concurrently will cause an api rate limit. In that case, a warning will be displayed and the call will be attempted again after the time window provided by github api (typically 60 seconds).

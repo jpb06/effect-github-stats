@@ -12,7 +12,7 @@ export interface GetIssueArgs {
 }
 
 export const getIssue = ({ owner, repo, number }: GetIssueArgs) =>
-  Effect.withSpan(__filename, {
+  Effect.withSpan('get-issue', {
     attributes: { owner, repo, number },
   })(
     pipe(
