@@ -3,12 +3,9 @@ import { pipe, Config, Effect } from 'effect';
 
 import { GithubApiError } from '../errors/github-api.error';
 
-const githubConfig = Config.withDefault(
-  Config.string('GITHUB_TOKEN'),
-  'github-token-not-set',
-);
+const githubConfig = Config.string('GITHUB_TOKEN');
 
-export const githubSourceAnalysisProvider = pipe(
+export const octokitCoreProvider = pipe(
   githubConfig,
   Effect.flatMap((token) =>
     pipe(

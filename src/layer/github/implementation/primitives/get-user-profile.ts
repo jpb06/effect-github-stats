@@ -2,7 +2,7 @@ import { Effect, pipe } from 'effect';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
-import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
+import { octokitCoreProvider } from '../../../providers/octokit-core.provider';
 import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
 
 export const getUserProfile = (username: string) =>
@@ -10,7 +10,7 @@ export const getUserProfile = (username: string) =>
     attributes: { username },
   })(
     pipe(
-      githubSourceAnalysisProvider,
+      octokitCoreProvider,
       Effect.flatMap((octokit) =>
         pipe(
           Effect.tryPromise({
