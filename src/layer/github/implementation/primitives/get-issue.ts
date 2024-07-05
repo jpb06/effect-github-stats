@@ -2,7 +2,7 @@ import { pipe, Effect } from 'effect';
 
 import { EffectResultSuccess } from '../../../../types/effect.types';
 import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
-import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
+import { octokitCoreProvider } from '../../../providers/octokit-core.provider';
 import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
 
 export interface GetIssueArgs {
@@ -16,7 +16,7 @@ export const getIssue = ({ owner, repo, number }: GetIssueArgs) =>
     attributes: { owner, repo, number },
   })(
     pipe(
-      githubSourceAnalysisProvider,
+      octokitCoreProvider,
       Effect.flatMap((octokit) =>
         pipe(
           Effect.tryPromise({

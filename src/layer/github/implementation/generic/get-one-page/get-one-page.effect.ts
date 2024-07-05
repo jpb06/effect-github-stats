@@ -4,7 +4,7 @@ import { Effect, pipe } from 'effect';
 
 import { handleOctokitRequestError } from '../../../../errors/handle-octokit-request-error';
 import { parseLink } from '../../../../logic/parse-link.logic';
-import { githubSourceAnalysisProvider } from '../../../../providers/github-source-analysis.provider';
+import { octokitCoreProvider } from '../../../../providers/octokit-core.provider';
 import { retryAfterSchedule } from '../../../../schedules/retry-after.schedule';
 
 import { octokitRequest } from './logic/octokit-request.logic';
@@ -20,7 +20,7 @@ export const getOnePage = <E extends keyof Endpoints>(
     },
   })(
     pipe(
-      githubSourceAnalysisProvider,
+      octokitCoreProvider,
       Effect.flatMap((octokit) =>
         pipe(
           Effect.tryPromise({
