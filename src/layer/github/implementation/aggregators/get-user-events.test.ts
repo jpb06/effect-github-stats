@@ -1,13 +1,11 @@
 import { Effect, pipe } from 'effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { GithubApiError } from '../../../errors/github-api.error';
+import { GithubApiError } from '@errors';
+import { mockData, octokitRequestResponseHeaders } from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetUserEventsArgs } from './get-user-events';
+import { GetUserEventsArgs } from './get-user-events.js';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -21,6 +19,7 @@ describe('getUserEvents effect', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
   });
 
   it('should retun multiple pages data', async () => {
@@ -30,7 +29,7 @@ describe('getUserEvents effect', () => {
       ...octokitRequestResponseHeaders(count),
     });
 
-    const { getUserEvents } = await import('./get-user-events');
+    const { getUserEvents } = await import('./get-user-events.js');
 
     const result = await Effect.runPromise(getUserEvents(args));
 
@@ -44,7 +43,7 @@ describe('getUserEvents effect', () => {
       headers: {},
     });
 
-    const { getUserEvents } = await import('./get-user-events');
+    const { getUserEvents } = await import('./get-user-events.js');
 
     const result = await Effect.runPromise(getUserEvents(args));
 
@@ -61,7 +60,7 @@ describe('getUserEvents effect', () => {
       },
     );
 
-    const { getUserEvents } = await import('./get-user-events');
+    const { getUserEvents } = await import('./get-user-events.js');
 
     const result = await Effect.runPromise(
       pipe(getUserEvents(args), Effect.flip),

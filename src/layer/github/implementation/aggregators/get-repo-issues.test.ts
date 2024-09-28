@@ -1,13 +1,11 @@
 import { Effect, pipe } from 'effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { GithubApiError } from '../../../errors/github-api.error';
+import { GithubApiError } from '@errors';
+import { mockData, octokitRequestResponseHeaders } from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetRepoIssuesArgs } from './get-repo-issues';
+import { GetRepoIssuesArgs } from './get-repo-issues.js';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -22,6 +20,7 @@ describe('getRepoIssues effect', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
   });
 
   it('should retun multiple pages data', async () => {
@@ -31,7 +30,7 @@ describe('getRepoIssues effect', () => {
       ...octokitRequestResponseHeaders(count),
     });
 
-    const { getRepoIssues } = await import('./get-repo-issues');
+    const { getRepoIssues } = await import('./get-repo-issues.js');
 
     const result = await Effect.runPromise(getRepoIssues(args));
 
@@ -45,7 +44,7 @@ describe('getRepoIssues effect', () => {
       headers: {},
     });
 
-    const { getRepoIssues } = await import('./get-repo-issues');
+    const { getRepoIssues } = await import('./get-repo-issues.js');
 
     const result = await Effect.runPromise(getRepoIssues(args));
 
@@ -62,7 +61,7 @@ describe('getRepoIssues effect', () => {
       },
     );
 
-    const { getRepoIssues } = await import('./get-repo-issues');
+    const { getRepoIssues } = await import('./get-repo-issues.js');
 
     const result = await Effect.runPromise(
       pipe(getRepoIssues(args), Effect.flip),

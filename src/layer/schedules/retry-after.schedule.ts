@@ -1,6 +1,6 @@
-import { pipe, Schedule, Effect, Duration } from 'effect';
+import { Duration, Effect, Schedule, pipe } from 'effect';
 
-import { isApiRateLimitError } from '../errors/api-rate-limit.error';
+import { isApiRateLimitError } from '@errors';
 
 export const retryAfterSchedule = pipe(
   Schedule.forever,

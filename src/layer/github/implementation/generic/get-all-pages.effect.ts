@@ -1,7 +1,7 @@
 import { Effect } from 'effect';
 
-import { arrayRange } from '../../../../util/array-range.util';
-import { defaultConcurrency } from '../constants/default-concurrency.constant';
+import { defaultConcurrency } from '@constants';
+import { arrayRange } from '@util';
 
 type LinkKey = 'prev' | 'next' | 'last';
 
@@ -16,7 +16,7 @@ type GetPage<TArgs, TData, TError> = (
 
 export const getAllPages = <
   TError,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   TArgs extends { concurrency?: number } & Record<string, any>,
   TDataItem,
   TData extends TDataItem[],

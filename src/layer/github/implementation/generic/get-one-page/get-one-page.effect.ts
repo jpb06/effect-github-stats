@@ -1,13 +1,12 @@
 import { type Endpoints } from '@octokit/types';
-import { RequestParameters } from '@octokit/types/dist-types/RequestParameters';
+import { RequestParameters } from '@octokit/types/dist-types/RequestParameters.js';
 import { Effect, pipe } from 'effect';
 
-import { handleOctokitRequestError } from '../../../../errors/handle-octokit-request-error';
-import { parseLink } from '../../../../logic/parse-link.logic';
-import { githubSourceAnalysisProvider } from '../../../../providers/github-source-analysis.provider';
-import { retryAfterSchedule } from '../../../../schedules/retry-after.schedule';
+import { handleOctokitRequestError } from '@errors';
+import { githubSourceAnalysisProvider } from '@provider';
+import { retryAfterSchedule } from '@schedules';
 
-import { octokitRequest } from './logic/octokit-request.logic';
+import { octokitRequest, parseLink } from './logic/index.js';
 
 export const getOnePage = <E extends keyof Endpoints>(
   span: string,

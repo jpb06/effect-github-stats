@@ -1,10 +1,10 @@
 import { Effect } from 'effect';
 import { match } from 'ts-pattern';
 
-import { EffectResultSuccess } from '../../../../types/effect.types';
-import { getAllPages } from '../generic/get-all-pages.effect';
-import { getOrgReposPage } from '../paging/get-org-repos-page';
-import { getUserReposPage } from '../paging/get-user-repos-page';
+import { EffectResultSuccess } from '@types';
+import { getAllPages } from '../generic/get-all-pages.effect.js';
+import { getOrgReposPage } from '../paging/get-org-repos-page.js';
+import { getUserReposPage } from '../paging/get-user-repos-page.js';
 
 export interface GetRepositoriesArgs {
   target: string;

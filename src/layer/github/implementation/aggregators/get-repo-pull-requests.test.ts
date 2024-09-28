@@ -1,13 +1,11 @@
 import { Effect, pipe } from 'effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { GithubApiError } from '../../../errors/github-api.error';
+import { GithubApiError } from '@errors';
+import { mockData, octokitRequestResponseHeaders } from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetRepoPullRequestsArgs } from './get-repo-pull-requests';
+import { GetRepoPullRequestsArgs } from './get-repo-pull-requests.js';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -22,6 +20,7 @@ describe('getRepoPullRequests effect', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
   });
 
   it('should retun multiple pages data', async () => {
@@ -31,7 +30,7 @@ describe('getRepoPullRequests effect', () => {
       ...octokitRequestResponseHeaders(count),
     });
 
-    const { getRepoPullRequests } = await import('./get-repo-pull-requests');
+    const { getRepoPullRequests } = await import('./get-repo-pull-requests.js');
 
     const result = await Effect.runPromise(getRepoPullRequests(args));
 
@@ -45,7 +44,7 @@ describe('getRepoPullRequests effect', () => {
       headers: {},
     });
 
-    const { getRepoPullRequests } = await import('./get-repo-pull-requests');
+    const { getRepoPullRequests } = await import('./get-repo-pull-requests.js');
 
     const result = await Effect.runPromise(getRepoPullRequests(args));
 
@@ -62,7 +61,7 @@ describe('getRepoPullRequests effect', () => {
       },
     );
 
-    const { getRepoPullRequests } = await import('./get-repo-pull-requests');
+    const { getRepoPullRequests } = await import('./get-repo-pull-requests.js');
 
     const result = await Effect.runPromise(
       pipe(getRepoPullRequests(args), Effect.flip),

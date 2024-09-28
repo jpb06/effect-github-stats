@@ -1,18 +1,15 @@
 import { Duration, Effect, pipe } from 'effect';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { GithubApiError } from '../../../..';
-import { expectApiRateLimitMessages } from '../../../../tests/assertions/api-rate-limite-message.assert';
+import { ApiRateLimitError, GithubApiError } from '@errors';
+import { expectApiRateLimitMessages } from '@tests/assertions';
+import { delayEffect, delayEffectAndFlip } from '@tests/effects';
 import {
-  delayEffect,
-  delayEffectAndFlip,
-} from '../../../../tests/effects/delay-effect';
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestErrorWithRetryAfter } from '../../../../tests/mock-data/octokit-request-error-with-retry-after.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { ApiRateLimitError } from '../../../errors/api-rate-limit.error';
+  mockData,
+  octokitRequestErrorWithRetryAfter,
+  octokitRequestResponseHeaders,
+} from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -22,8 +19,9 @@ mockConsole({
 describe('getUserProfile effect', () => {
   const username = 'yolo';
 
-  afterEach(() => {
+  beforeEach(() => {
     vi.resetAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
   });
 
   it('should retun data with links', async () => {
@@ -31,7 +29,7 @@ describe('getUserProfile effect', () => {
       data: mockData,
     });
 
-    const { getUserProfile } = await import('./get-user-profile');
+    const { getUserProfile } = await import('./get-user-profile.js');
 
     const result = await Effect.runPromise(getUserProfile(username));
 
@@ -41,7 +39,7 @@ describe('getUserProfile effect', () => {
   it('should fail with an Octokit request error', async () => {
     octokitMock.requestFail(new GithubApiError({ cause: 'Oh no' }));
 
-    const { getUserProfile } = await import('./get-user-profile');
+    const { getUserProfile } = await import('./get-user-profile.js');
 
     const result = await Effect.runPromise(
       pipe(getUserProfile(username), Effect.flip),
@@ -55,7 +53,7 @@ describe('getUserProfile effect', () => {
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFail(error);
 
-    const { getUserProfile } = await import('./get-user-profile');
+    const { getUserProfile } = await import('./get-user-profile.js');
 
     const effect = delayEffectAndFlip(
       getUserProfile(username),
@@ -75,7 +73,7 @@ describe('getUserProfile effect', () => {
       ...octokitRequestResponseHeaders(25),
     });
 
-    const { getUserProfile } = await import('./get-user-profile');
+    const { getUserProfile } = await import('./get-user-profile.js');
 
     const effect = delayEffect(getUserProfile(username), Duration.seconds(40));
     const result = await Effect.runPromise(effect);

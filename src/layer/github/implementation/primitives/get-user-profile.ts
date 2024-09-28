@@ -1,9 +1,9 @@
 import { Effect, pipe } from 'effect';
 
-import { EffectResultSuccess } from '../../../../types/effect.types';
-import { handleOctokitRequestError } from '../../../errors/handle-octokit-request-error';
-import { githubSourceAnalysisProvider } from '../../../providers/github-source-analysis.provider';
-import { retryAfterSchedule } from '../../../schedules/retry-after.schedule';
+import { handleOctokitRequestError } from '@errors';
+import { githubSourceAnalysisProvider } from '@provider';
+import { retryAfterSchedule } from '@schedules';
+import { EffectResultSuccess } from '@types';
 
 export const getUserProfile = (username: string) =>
   Effect.withSpan('get-user-profile', {

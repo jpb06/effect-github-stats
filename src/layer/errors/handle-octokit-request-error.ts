@@ -1,7 +1,6 @@
-import { retryWarningMessage } from '../github/implementation/constants/retry-warning-message.constant';
+import { retryWarningMessage } from '@constants';
 
-import { ApiRateLimitError } from './api-rate-limit.error';
-import { GithubApiError } from './github-api.error';
+import { ApiRateLimitError, GithubApiError } from './index.js';
 
 interface WithMaybeRetryAfter {
   response?: { headers?: { 'retry-after'?: number } };
