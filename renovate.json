@@ -2,5 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "schedule": ["before 4am"],
-  "automerge": false
+  "automerge": false,
+  "rebaseWhen": "conflicted",
+  "semanticCommits": "enabled"
 }
