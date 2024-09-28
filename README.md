@@ -20,7 +20,7 @@ An [Effect](https://effect.website/) layer to interact with github api.
 
 <!-- readme-package-icons start -->
 
-<p align="left"><a href="https://docs.github.com/en/actions" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/GithubActions-Dark.svg" /></a>&nbsp;<a href="https://www.typescriptlang.org/docs/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/TypeScript.svg" /></a>&nbsp;<a href="https://nodejs.org/en/docs/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/NodeJS-Dark.svg" /></a>&nbsp;<a href="https://bun.sh/docs" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Bun-Dark.svg" /></a>&nbsp;<a href="https://github.com/motdotla/dotenv#readme" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Dotenv-Dark.svg" /></a>&nbsp;<a href="https://eslint.org/docs/latest/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Eslint-Dark.svg" /></a>&nbsp;<a href="https://prettier.io/docs/en/index.html" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Prettier-Dark.svg" /></a>&nbsp;<a href="https://vitest.dev/guide/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Vitest-Dark.svg" /></a>&nbsp;<a href="https://www.effect.website/docs/quickstart" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Effect-Dark.svg" /></a></p>
+<p align="left"><a href="https://docs.github.com/en/actions" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/GithubActions-Dark.svg" /></a>&nbsp;<a href="https://www.typescriptlang.org/docs/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/TypeScript.svg" /></a>&nbsp;<a href="https://nodejs.org/en/docs/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/NodeJS-Dark.svg" /></a>&nbsp;<a href="https://bun.sh/docs" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Bun-Dark.svg" /></a>&nbsp;<a href="https://biomejs.dev/guides/getting-started/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Biome-Dark.svg" /></a>&nbsp;<a href="https://github.com/motdotla/dotenv#readme" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Dotenv-Dark.svg" /></a>&nbsp;<a href="https://vitest.dev/guide/" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Vitest-Dark.svg" /></a>&nbsp;<a href="https://www.effect.website/docs/quickstart" target="_blank"><img height="50" src="https://raw.githubusercontent.com/jpb06/jpb06/master/icons/Effect-Dark.svg" /></a></p>
 
 <!-- readme-package-icons end -->
 
@@ -55,10 +55,10 @@ const [profile, repos, orgs, events] = await Effect.runPromise(
         OctokitLayer.user(username).events(),
       ],
       // Fetch all these in parallel
-      { concurrency: 'unbounded' },
+      { concurrency: 'unbounded' }
     ),
-    Effect.provide(OctokitLayerLive),
-  ),
+    Effect.provide(OctokitLayerLive)
+  )
 );
 ```
 
@@ -70,9 +70,9 @@ import { OctokitLayer, OctokitLayerLive } from 'effect-github-stats';
 const orgs = await Effect.runPromise(
   pipe(
     // Get organization repos
-    OctokitLayer.org('my-org').repos();
-    Effect.provide(OctokitLayerLive),
-  ),
+    OctokitLayer.org('my-org').repos(),
+    Effect.provide(OctokitLayerLive)
+  )
 );
 ```
 
@@ -103,10 +103,10 @@ const [issues, pulls, issue34, pull5453, pull5453Reviews] =
           OctokitLayer.repo(reactRepo).pull(5453).reviews(),
         ],
         // Fetch all these in parallel
-        { concurrency: 'unbounded' },
+        { concurrency: 'unbounded' }
       ),
-      Effect.provide(OctokitLayerLive),
-    ),
+      Effect.provide(OctokitLayerLive)
+    )
   );
 ```
 
@@ -120,7 +120,10 @@ You can specify the `concurrency` parameter on calls doing several requests in p
 
 ```typescript
 // Will fetch the first page and then 100 pages concurrently
-github.repo(repo).pulls(100);
+OctokitLayer.repo({
+  owner: 'facebook',
+  name: 'react',
+}).pulls(100);
 ```
 
 Note that github api enforces [api rate limits](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#dealing-with-secondary-rate-limits). Fetching too many results concurrently will cause an api rate limit. In that case, a warning will be displayed and the call will be attempted again after the time window provided by github api (typically 60 seconds).
