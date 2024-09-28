@@ -1,8 +1,8 @@
 import { Effect } from 'effect';
 
-import { EffectResultSuccess } from '../../../..';
-import { getAllPages } from '../generic/get-all-pages.effect';
-import { getUserEventsPage } from '../paging/get-user-events-page';
+import { EffectResultSuccess } from '@types';
+import { getAllPages } from '../generic/get-all-pages.effect.js';
+import { getUserEventsPage } from '../paging/get-user-events-page.js';
 
 export interface GetUserEventsArgs {
   username: string;

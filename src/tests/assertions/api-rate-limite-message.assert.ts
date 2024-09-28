@@ -1,9 +1,6 @@
 import { expect } from 'vitest';
 
-import {
-  WithRequestUrl,
-  retryWarningMessage,
-} from '../../layer/github/implementation/constants/retry-warning-message.constant';
+import { WithRequestUrl, retryWarningMessage } from '@constants';
 
 export const expectApiRateLimitMessages = (
   error: WithRequestUrl,

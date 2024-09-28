@@ -1,8 +1,9 @@
 import { Effect } from 'effect';
 
-import { EffectResultSuccess } from '../../../../types/effect.types';
-import { getAllPages } from '../generic/get-all-pages.effect';
-import { getRepoIssuesPage } from '../paging/get-repo-issues-page';
+import { EffectResultSuccess } from '@types';
+
+import { getAllPages } from '../generic/get-all-pages.effect.js';
+import { getRepoIssuesPage } from '../paging/get-repo-issues-page.js';
 
 export interface GetRepoIssuesArgs {
   owner: string;

@@ -1,6 +1,6 @@
-import { tapLayer } from './effects/tapLayer.effect';
-import { defaultConcurrency } from './github/implementation/constants/default-concurrency.constant';
-import { OctokitLayerContext as Context } from './octokit.context';
+import { defaultConcurrency } from '@constants';
+import { tapLayer } from './effects/tapLayer.effect.js';
+import { OctokitLayerContext as Context } from './octokit.context.js';
 
 export interface RepoArgs {
   owner: string;

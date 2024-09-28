@@ -1,13 +1,11 @@
 import { Effect, pipe } from 'effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { GithubApiError } from '../../../errors/github-api.error';
+import { GithubApiError } from '@errors';
+import { mockData, octokitRequestResponseHeaders } from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetRepositoriesArgs } from './get-repositories';
+import { GetRepositoriesArgs } from './get-repositories.js';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -22,6 +20,7 @@ describe('getRepositories effect', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
   });
 
   it('should retun user repos', async () => {
@@ -31,7 +30,7 @@ describe('getRepositories effect', () => {
       ...octokitRequestResponseHeaders(count),
     });
 
-    const { getRepositories } = await import('./get-repositories');
+    const { getRepositories } = await import('./get-repositories.js');
 
     const result = await Effect.runPromise(getRepositories(args));
 
@@ -46,7 +45,7 @@ describe('getRepositories effect', () => {
       ...octokitRequestResponseHeaders(count),
     });
 
-    const { getRepositories } = await import('./get-repositories');
+    const { getRepositories } = await import('./get-repositories.js');
 
     const result = await Effect.runPromise(
       getRepositories({ ...args, type: 'org' }),
@@ -62,7 +61,7 @@ describe('getRepositories effect', () => {
       headers: {},
     });
 
-    const { getRepositories } = await import('./get-repositories');
+    const { getRepositories } = await import('./get-repositories.js');
 
     const result = await Effect.runPromise(getRepositories(args));
 
@@ -79,7 +78,7 @@ describe('getRepositories effect', () => {
       },
     );
 
-    const { getRepositories } = await import('./get-repositories');
+    const { getRepositories } = await import('./get-repositories.js');
 
     const result = await Effect.runPromise(
       pipe(getRepositories(args), Effect.flip),

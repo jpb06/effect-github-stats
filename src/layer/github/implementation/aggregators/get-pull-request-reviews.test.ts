@@ -1,13 +1,11 @@
 import { Effect, pipe } from 'effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { GithubApiError } from '../../../errors/github-api.error';
+import { GithubApiError } from '@errors';
+import { mockData, octokitRequestResponseHeaders } from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetPullRequestReviewsArgs } from './get-pull-request-reviews';
+import { GetPullRequestReviewsArgs } from './get-pull-request-reviews.js';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -23,6 +21,7 @@ describe('getPullRequestReviews effect', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
   });
 
   it('should retun multiple pages data', async () => {
@@ -33,7 +32,7 @@ describe('getPullRequestReviews effect', () => {
     });
 
     const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
+      './get-pull-request-reviews.js'
     );
 
     const result = await Effect.runPromise(getPullRequestReviews(args));
@@ -49,7 +48,7 @@ describe('getPullRequestReviews effect', () => {
     });
 
     const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
+      './get-pull-request-reviews.js'
     );
 
     const result = await Effect.runPromise(getPullRequestReviews(args));
@@ -68,7 +67,7 @@ describe('getPullRequestReviews effect', () => {
     );
 
     const { getPullRequestReviews } = await import(
-      './get-pull-request-reviews'
+      './get-pull-request-reviews.js'
     );
 
     const result = await Effect.runPromise(

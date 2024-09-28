@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/core';
 import { type Endpoints } from '@octokit/types';
-import { RequestParameters } from '@octokit/types/dist-types/RequestParameters';
+import { RequestParameters } from '@octokit/types/dist-types/RequestParameters.js';
 
 export const octokitRequest =
   (octokit: Octokit) =>

@@ -1,20 +1,18 @@
 import { Duration, Effect, pipe } from 'effect';
+import { runPromise } from 'effect-errors';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { expectApiRateLimitMessages } from '../../../../tests/assertions/api-rate-limite-message.assert';
+import { ApiRateLimitError, GithubApiError } from '@errors';
+import { expectApiRateLimitMessages } from '@tests/assertions';
+import { delayEffect, delayEffectAndFlip } from '@tests/effects';
 import {
-  delayEffect,
-  delayEffectAndFlip,
-} from '../../../../tests/effects/delay-effect';
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestErrorWithRetryAfter } from '../../../../tests/mock-data/octokit-request-error-with-retry-after.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { ApiRateLimitError } from '../../../errors/api-rate-limit.error';
-import { GithubApiError } from '../../../errors/github-api.error';
+  mockData,
+  octokitRequestErrorWithRetryAfter,
+  octokitRequestResponseHeaders,
+} from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetUserEventsPageArgs } from './get-user-events-page';
+import { GetUserEventsPageArgs } from './get-user-events-page.js';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -29,6 +27,20 @@ describe('getUserEventsPage effect', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
+  });
+
+  it('should fail if github token env variable is not set', async () => {
+    vi.unstubAllEnvs();
+
+    const { getUserEventsPage } = await import('./get-user-events-page.js');
+
+    const result = await Effect.runPromise(
+      pipe(getUserEventsPage(args), Effect.flip),
+    );
+
+    expect(result).toBeInstanceOf(GithubApiError);
+    expect((result as Error).message).toBe('GITHUB_TOKEN not set');
   });
 
   it('should retun data with links', async () => {
@@ -37,9 +49,9 @@ describe('getUserEventsPage effect', () => {
       ...octokitRequestResponseHeaders(25),
     });
 
-    const { getUserEventsPage } = await import('./get-user-events-page');
+    const { getUserEventsPage } = await import('./get-user-events-page.js');
 
-    const result = await Effect.runPromise(getUserEventsPage(args));
+    const result = await runPromise(getUserEventsPage(args));
 
     expect(result.data).toStrictEqual(mockData);
     expect(result.links).toStrictEqual({ next: 2, last: 25 });
@@ -48,7 +60,7 @@ describe('getUserEventsPage effect', () => {
   it('should fail with an Octokit request error', async () => {
     await octokitMock.requestFail(new GithubApiError({ cause: 'Oh no' }));
 
-    const { getUserEventsPage } = await import('./get-user-events-page');
+    const { getUserEventsPage } = await import('./get-user-events-page.js');
 
     const result = await Effect.runPromise(
       pipe(getUserEventsPage(args), Effect.flip),
@@ -57,12 +69,12 @@ describe('getUserEventsPage effect', () => {
     expect(result).toBeInstanceOf(GithubApiError);
   });
 
-  it('should fail if an api rate limit error', async () => {
+  it('should fail with an api rate limit error', async () => {
     const retryDelay = 20;
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFail(error);
 
-    const { getUserEventsPage } = await import('./get-user-events-page');
+    const { getUserEventsPage } = await import('./get-user-events-page.js');
 
     const effect = delayEffectAndFlip(
       getUserEventsPage(args),
@@ -82,10 +94,10 @@ describe('getUserEventsPage effect', () => {
       ...octokitRequestResponseHeaders(25),
     });
 
-    const { getUserEventsPage } = await import('./get-user-events-page');
+    const { getUserEventsPage } = await import('./get-user-events-page.js');
 
     const effect = delayEffect(getUserEventsPage(args), Duration.seconds(40));
-    const result = await Effect.runPromise(effect);
+    const result = await runPromise(effect);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
     expect(result.data).toStrictEqual(mockData);

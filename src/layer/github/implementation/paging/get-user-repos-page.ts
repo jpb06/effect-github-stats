@@ -1,5 +1,5 @@
-import { EffectResultSuccess } from '../../../../types/effect.types';
-import { getOnePage } from '../generic/get-one-page/get-one-page.effect';
+import { EffectResultSuccess } from '@types';
+import { getOnePage } from '../generic/get-one-page/get-one-page.effect.js';
 
 export interface GetUserReposPageArgs {
   username: string;

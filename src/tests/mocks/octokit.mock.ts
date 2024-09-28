@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Octokit } from '@octokit/core';
 import { RequestInterface } from '@octokit/types';
 import { vi } from 'vitest';
@@ -32,6 +31,7 @@ export const octokitMock = {
 
     return requestMock;
   },
+  // biome-ignore lint/suspicious/noExplicitAny: /
   requestFail: async (error: any) => {
     const requestMock = vi.fn();
 
@@ -46,6 +46,7 @@ export const octokitMock = {
 
     return requestMock;
   },
+  // biome-ignore lint/suspicious/noExplicitAny: /
   requestSucceedAndFail: async (error: any, data: unknown) => {
     const requestMock = vi.fn();
 
@@ -62,6 +63,7 @@ export const octokitMock = {
 
     return requestMock;
   },
+  // biome-ignore lint/suspicious/noExplicitAny: /
   requestFailAndThenSucceed: async (error: any, data: unknown) => {
     const requestMock = vi.fn();
 

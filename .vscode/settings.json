@@ -1,11 +1,11 @@
 {
-  "eslint.run": "onSave",
+  "biome.enabled": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
+    "source.organizeImports.biome": "explicit"
   },
   "editor.tabSize": 2,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "biomejs.biome",
   "[shellscript]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
@@ -18,11 +18,10 @@
   "[properties]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.singleQuote": true,
+    "prettier.semi": true
   },
   "typescript.preferences.importModuleSpecifier": "relative"
 }

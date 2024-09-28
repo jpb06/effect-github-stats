@@ -1,35 +1,24 @@
 import type { ConfigError, Effect } from 'effect';
 import { Context } from 'effect';
 
-import { ApiRateLimitError } from './errors/api-rate-limit.error';
-import { GithubApiError } from './errors/github-api.error';
-import {
-  GetPullRequestReviewsArgs,
-  PullRequestReviewsResult,
-} from './github/implementation/aggregators/get-pull-request-reviews';
-import { RepoIssuesResult } from './github/implementation/aggregators/get-repo-issues';
-import {
-  RepoPullRequestsResult,
-  GetRepoPullRequestsArgs,
-} from './github/implementation/aggregators/get-repo-pull-requests';
-import {
-  GetRepositoriesArgs,
-  RepositoriesResult,
-} from './github/implementation/aggregators/get-repositories';
-import {
-  GetUserEventsArgs,
-  UserEventsResult,
-} from './github/implementation/aggregators/get-user-events';
+import { ApiRateLimitError, GithubApiError } from '@errors';
 import {
   GetIssueArgs,
-  IssueResult,
-} from './github/implementation/primitives/get-issue';
-import {
   GetPullRequestArgs,
+  GetPullRequestReviewsArgs,
+  GetRepoPullRequestsArgs,
+  GetRepositoriesArgs,
+  GetUserEventsArgs,
+  IssueResult,
   PullRequestResult,
-} from './github/implementation/primitives/get-pull-request';
-import { UserOrgsResult } from './github/implementation/primitives/get-user-orgs';
-import { UserProfileResult } from './github/implementation/primitives/get-user-profile';
+  PullRequestReviewsResult,
+  RepoIssuesResult,
+  RepoPullRequestsResult,
+  RepositoriesResult,
+  UserEventsResult,
+  UserOrgsResult,
+  UserProfileResult,
+} from '@implementation';
 
 export interface Octokit {
   readonly getUserProfile: (

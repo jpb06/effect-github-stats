@@ -1,8 +1,8 @@
 import { Effect } from 'effect';
 
-import { EffectResultSuccess } from '../../../../types/effect.types';
-import { getAllPages } from '../generic/get-all-pages.effect';
-import { getPullRequestReviewsPage } from '../paging/get-pull-request-reviews-page';
+import { EffectResultSuccess } from '@types';
+import { getAllPages } from '../generic/get-all-pages.effect.js';
+import { getPullRequestReviewsPage } from '../paging/get-pull-request-reviews-page.js';
 
 export interface GetPullRequestReviewsArgs {
   owner: string;

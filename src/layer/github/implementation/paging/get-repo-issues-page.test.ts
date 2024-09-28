@@ -1,20 +1,17 @@
 import { Duration, Effect, pipe } from 'effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { expectApiRateLimitMessages } from '../../../../tests/assertions/api-rate-limite-message.assert';
+import { ApiRateLimitError, GithubApiError } from '@errors';
+import { expectApiRateLimitMessages } from '@tests/assertions';
+import { delayEffect, delayEffectAndFlip } from '@tests/effects';
 import {
-  delayEffect,
-  delayEffectAndFlip,
-} from '../../../../tests/effects/delay-effect';
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestErrorWithRetryAfter } from '../../../../tests/mock-data/octokit-request-error-with-retry-after.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { ApiRateLimitError } from '../../../errors/api-rate-limit.error';
-import { GithubApiError } from '../../../errors/github-api.error';
+  mockData,
+  octokitRequestErrorWithRetryAfter,
+  octokitRequestResponseHeaders,
+} from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetRepoIssuesPageArgs } from './get-repo-issues-page';
+import { GetRepoIssuesPageArgs } from './get-repo-issues-page.js';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -30,6 +27,7 @@ describe('getRepoIssuesPage effect', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
   });
 
   it('should retun data with links', async () => {
@@ -38,7 +36,7 @@ describe('getRepoIssuesPage effect', () => {
       ...octokitRequestResponseHeaders(25),
     });
 
-    const { getRepoIssuesPage } = await import('./get-repo-issues-page');
+    const { getRepoIssuesPage } = await import('./get-repo-issues-page.js');
 
     const result = await Effect.runPromise(getRepoIssuesPage(args));
 
@@ -49,7 +47,7 @@ describe('getRepoIssuesPage effect', () => {
   it('should fail with an Octokit request error', async () => {
     await octokitMock.requestFail(new GithubApiError({ cause: 'Oh no' }));
 
-    const { getRepoIssuesPage } = await import('./get-repo-issues-page');
+    const { getRepoIssuesPage } = await import('./get-repo-issues-page.js');
 
     const result = await Effect.runPromise(
       pipe(getRepoIssuesPage(args), Effect.flip),
@@ -63,7 +61,7 @@ describe('getRepoIssuesPage effect', () => {
     const error = octokitRequestErrorWithRetryAfter(retryDelay);
     await octokitMock.requestFail(error);
 
-    const { getRepoIssuesPage } = await import('./get-repo-issues-page');
+    const { getRepoIssuesPage } = await import('./get-repo-issues-page.js');
 
     const effect = delayEffectAndFlip(
       getRepoIssuesPage(args),
@@ -83,7 +81,7 @@ describe('getRepoIssuesPage effect', () => {
       ...octokitRequestResponseHeaders(25),
     });
 
-    const { getRepoIssuesPage } = await import('./get-repo-issues-page');
+    const { getRepoIssuesPage } = await import('./get-repo-issues-page.js');
 
     const effect = delayEffect(getRepoIssuesPage(args), Duration.seconds(40));
     const result = await Effect.runPromise(effect);

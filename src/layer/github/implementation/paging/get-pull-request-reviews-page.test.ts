@@ -1,20 +1,17 @@
 import { Duration, Effect, pipe } from 'effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { expectApiRateLimitMessages } from '../../../../tests/assertions/api-rate-limite-message.assert';
+import { ApiRateLimitError, GithubApiError } from '@errors';
+import { expectApiRateLimitMessages } from '@tests/assertions';
+import { delayEffect, delayEffectAndFlip } from '@tests/effects';
 import {
-  delayEffect,
-  delayEffectAndFlip,
-} from '../../../../tests/effects/delay-effect';
-import { mockData } from '../../../../tests/mock-data/data.mock-data';
-import { octokitRequestErrorWithRetryAfter } from '../../../../tests/mock-data/octokit-request-error-with-retry-after.mock-data';
-import { octokitRequestResponseHeaders } from '../../../../tests/mock-data/octokit-request-response-headers.mock-data';
-import { mockConsole } from '../../../../tests/mocks/console.mock';
-import { octokitMock } from '../../../../tests/mocks/octokit.mock';
-import { ApiRateLimitError } from '../../../errors/api-rate-limit.error';
-import { GithubApiError } from '../../../errors/github-api.error';
+  mockData,
+  octokitRequestErrorWithRetryAfter,
+  octokitRequestResponseHeaders,
+} from '@tests/mock-data';
+import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetPullRequestReviewsPageArgs } from './get-pull-request-reviews-page';
+import { GetPullRequestReviewsPageArgs } from './get-pull-request-reviews-page.js';
 
 vi.mock('@octokit/core');
 mockConsole({
@@ -31,6 +28,7 @@ describe('getPullRequestReviewsPage effect', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('GITHUB_TOKEN', 'GITHUB_TOKEN_VALUE');
   });
 
   it('should retun data with links', async () => {
@@ -40,7 +38,7 @@ describe('getPullRequestReviewsPage effect', () => {
     });
 
     const { getPullRequestReviewsPage } = await import(
-      './get-pull-request-reviews-page'
+      './get-pull-request-reviews-page.js'
     );
 
     const result = await Effect.runPromise(getPullRequestReviewsPage(args));
@@ -53,7 +51,7 @@ describe('getPullRequestReviewsPage effect', () => {
     await octokitMock.requestFail(new GithubApiError({ cause: 'Oh no' }));
 
     const { getPullRequestReviewsPage } = await import(
-      './get-pull-request-reviews-page'
+      './get-pull-request-reviews-page.js'
     );
 
     const result = await Effect.runPromise(
@@ -69,7 +67,7 @@ describe('getPullRequestReviewsPage effect', () => {
     await octokitMock.requestFail(error);
 
     const { getPullRequestReviewsPage } = await import(
-      './get-pull-request-reviews-page'
+      './get-pull-request-reviews-page.js'
     );
 
     const effect = delayEffectAndFlip(
@@ -91,7 +89,7 @@ describe('getPullRequestReviewsPage effect', () => {
     });
 
     const { getPullRequestReviewsPage } = await import(
-      './get-pull-request-reviews-page'
+      './get-pull-request-reviews-page.js'
     );
 
     const effect = delayEffect(
