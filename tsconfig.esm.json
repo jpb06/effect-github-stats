@@ -7,6 +7,10 @@
 		"./vite.config.mts"
 	],
 	"compilerOptions": {
+		"plugins": [
+			{ "transform": "typescript-transform-paths" },
+			{ "transform": "typescript-transform-paths", "afterDeclarations": true }
+		],
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
 		"outDir": "dist/esm",
