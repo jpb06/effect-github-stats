@@ -1,8 +1,8 @@
 import type { ConfigError, Effect } from 'effect';
 import { Context } from 'effect';
 
-import { ApiRateLimitError, GithubApiError } from '@errors';
-import {
+import type { ApiRateLimitError, GithubApiError } from '@errors';
+import type {
   GetIssueArgs,
   GetPullRequestArgs,
   GetPullRequestReviewsArgs,

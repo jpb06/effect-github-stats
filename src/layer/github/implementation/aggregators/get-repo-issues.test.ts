@@ -5,7 +5,7 @@ import { GithubApiError } from '@errors';
 import { mockData, octokitRequestResponseHeaders } from '@tests/mock-data';
 import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetRepoIssuesArgs } from './get-repo-issues.js';
+import type { GetRepoIssuesArgs } from './get-repo-issues.js';
 
 vi.mock('@octokit/core');
 mockConsole({

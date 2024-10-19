@@ -5,7 +5,7 @@ import { GithubApiError } from '@errors';
 import { mockData, octokitRequestResponseHeaders } from '@tests/mock-data';
 import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetUserEventsArgs } from './get-user-events.js';
+import type { GetUserEventsArgs } from './get-user-events.js';
 
 vi.mock('@octokit/core');
 mockConsole({

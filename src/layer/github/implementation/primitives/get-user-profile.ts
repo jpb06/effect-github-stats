@@ -3,7 +3,7 @@ import { Effect, pipe } from 'effect';
 import { handleOctokitRequestError } from '@errors';
 import { githubSourceAnalysisProvider } from '@provider';
 import { retryAfterSchedule } from '@schedules';
-import { EffectResultSuccess } from '@types';
+import type { EffectResultSuccess } from '@types';
 
 export const getUserProfile = (username: string) =>
   Effect.withSpan('get-user-profile', {

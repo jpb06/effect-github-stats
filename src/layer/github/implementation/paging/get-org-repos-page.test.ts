@@ -11,7 +11,7 @@ import {
 } from '@tests/mock-data';
 import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetOrgReposPageArgs } from './get-org-repos-page.js';
+import type { GetOrgReposPageArgs } from './get-org-repos-page.js';
 
 vi.mock('@octokit/core');
 mockConsole({

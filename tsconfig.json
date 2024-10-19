@@ -10,7 +10,6 @@
 		"allowJs": false,
 		"incremental": false,
 		"composite": false,
-
 		"moduleResolution": "NodeNext",
 		"noEmit": true,
 

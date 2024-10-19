@@ -1,6 +1,6 @@
 import { Effect } from 'effect';
 
-import { EffectResultSuccess } from '@types';
+import type { EffectResultSuccess } from '@types';
 import { getAllPages } from '../generic/get-all-pages.effect.js';
 import { getPullRequestReviewsPage } from '../paging/get-pull-request-reviews-page.js';
 
