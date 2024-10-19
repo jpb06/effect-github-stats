@@ -1,5 +1,5 @@
 import { defaultConcurrency } from '@constants';
-import { tapLayer } from './effects/tapLayer.effect.js';
+import { tapLayer } from './effects/tap-layer.effect.js';
 import { OctokitLayerContext as Context } from './octokit.context.js';
 
 export interface RepoArgs {

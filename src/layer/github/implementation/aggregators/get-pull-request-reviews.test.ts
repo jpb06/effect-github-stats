@@ -5,7 +5,7 @@ import { GithubApiError } from '@errors';
 import { mockData, octokitRequestResponseHeaders } from '@tests/mock-data';
 import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetPullRequestReviewsArgs } from './get-pull-request-reviews.js';
+import type { GetPullRequestReviewsArgs } from './get-pull-request-reviews.js';
 
 vi.mock('@octokit/core');
 mockConsole({

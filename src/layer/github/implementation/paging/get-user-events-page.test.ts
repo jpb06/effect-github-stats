@@ -12,7 +12,7 @@ import {
 } from '@tests/mock-data';
 import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetUserEventsPageArgs } from './get-user-events-page.js';
+import type { GetUserEventsPageArgs } from './get-user-events-page.js';
 
 vi.mock('@octokit/core');
 mockConsole({

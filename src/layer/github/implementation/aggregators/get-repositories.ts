@@ -1,7 +1,7 @@
 import { Effect } from 'effect';
 import { match } from 'ts-pattern';
 
-import { EffectResultSuccess } from '@types';
+import type { EffectResultSuccess } from '@types';
 import { getAllPages } from '../generic/get-all-pages.effect.js';
 import { getOrgReposPage } from '../paging/get-org-repos-page.js';
 import { getUserReposPage } from '../paging/get-user-repos-page.js';

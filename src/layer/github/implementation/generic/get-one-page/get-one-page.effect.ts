@@ -1,5 +1,5 @@
-import { type Endpoints } from '@octokit/types';
-import { RequestParameters } from '@octokit/types/dist-types/RequestParameters.js';
+import type { Endpoints } from '@octokit/types';
+import type { RequestParameters } from '@octokit/types/dist-types/RequestParameters.js';
 import { Effect, pipe } from 'effect';
 
 import { handleOctokitRequestError } from '@errors';

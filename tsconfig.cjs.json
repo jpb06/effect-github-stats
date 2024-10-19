@@ -7,16 +7,11 @@
 		"./vite.config.mts"
 	],
 	"compilerOptions": {
-		"plugins": [
-			{ "transform": "typescript-transform-paths" },
-			{ "transform": "typescript-transform-paths", "afterDeclarations": true }
-		],
 		"module": "CommonJS",
 		"moduleResolution": "Node",
 		"outDir": "dist/cjs",
-		"declarationDir": "dist/dts/cjs",
 		"noEmit": false,
-		"declaration": true,
+		"declaration": false,
 		"sourceMap": true
 	}
 }

@@ -1,4 +1,4 @@
-import { Duration, Effect, Fiber, TestClock, TestContext, pipe } from 'effect';
+import { type Duration, Effect, Fiber, TestClock, TestContext, pipe } from 'effect';
 
 export const delayEffect = <R, E>(
   effect: Effect.Effect<R, E>,

@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/core';
-import { RequestInterface } from '@octokit/types';
+import type { RequestInterface } from '@octokit/types';
 import { vi } from 'vitest';
 
 export const octokitMock = {

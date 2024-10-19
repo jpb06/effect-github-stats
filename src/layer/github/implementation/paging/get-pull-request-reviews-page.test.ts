@@ -11,7 +11,7 @@ import {
 } from '@tests/mock-data';
 import { mockConsole, octokitMock } from '@tests/mocks';
 
-import { GetPullRequestReviewsPageArgs } from './get-pull-request-reviews-page.js';
+import type { GetPullRequestReviewsPageArgs } from './get-pull-request-reviews-page.js';
 
 vi.mock('@octokit/core');
 mockConsole({

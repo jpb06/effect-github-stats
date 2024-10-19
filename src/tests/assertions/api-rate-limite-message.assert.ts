@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
 
-import { WithRequestUrl, retryWarningMessage } from '@constants';
+import { type WithRequestUrl, retryWarningMessage } from '@constants';
 
 export const expectApiRateLimitMessages = (
   error: WithRequestUrl,
