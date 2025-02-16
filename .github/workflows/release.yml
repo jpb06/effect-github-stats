@@ -44,11 +44,11 @@ jobs:
 
       - name: 📥 Install deps
         if: ${{ steps.release.outputs.release_created }}
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: ⚙️ Building package
         if: ${{ steps.release.outputs.release_created }}
-        run: pnpm build
+        run: bun run build
 
       - name: 🚀 Publish package
         id: publish
