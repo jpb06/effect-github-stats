@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.35](https://github.com/jpb06/effect-github-stats/compare/v1.0.34...v1.0.35) (2025-02-16)
+
+
+### Bug Fixes
+
+* using bun ([#50](https://github.com/jpb06/effect-github-stats/issues/50)) ([6eb7bf6](https://github.com/jpb06/effect-github-stats/commit/6eb7bf68e4709af8cdf32e2a2c06c29e1b46615e))
+
 ## [1.0.34](https://github.com/jpb06/effect-github-stats/compare/v1.0.33...v1.0.34) (2025-02-16)
 
 
