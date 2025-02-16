@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/jpb06/effect-github-stats.git",
   "name": "effect-github-stats",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "author": "jpb06 <jp.bois.06@outlook.fr>",
   "description": "Getting user stats from github",
   "license": "MIT",
