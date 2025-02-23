@@ -1,5 +1,4 @@
-import { Effect } from 'effect';
-import { match } from 'ts-pattern';
+import { Effect, Match } from 'effect';
 
 import type { EffectResultSuccess } from '@types';
 import { getAllPages } from '../generic/get-all-pages.effect.js';
@@ -15,20 +14,21 @@ export interface GetRepositoriesArgs {
 const getPage =
   ({ target, type }: GetRepositoriesArgs) =>
   (page: number) =>
-    match(type)
-      .with('org', () =>
+    Match.value(type).pipe(
+      Match.when('org', () =>
         getOrgReposPage({
           org: target,
           page,
         }),
-      )
-      .with('user', () =>
+      ),
+      Match.when('user', () =>
         getUserReposPage({
           username: target,
           page,
         }),
-      )
-      .exhaustive();
+      ),
+      Match.exhaustive,
+    );
 
 export const getRepositories = (args: GetRepositoriesArgs) =>
   Effect.withSpan('get-repositories', {
