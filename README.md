@@ -3,20 +3,11 @@
 [![Open in Visual Studio Code](https://img.shields.io/static/v1?logo=visualstudiocode&label=&message=Open%20in%20Visual%20Studio%20Code&labelColor=2c2c32&color=007acc&logoColor=007acc)](https://github.dev/jpb06/effect-github-stats)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/effect-github-stats)
 ![Github workflow](https://img.shields.io/github/actions/workflow/status/jpb06/effect-github-stats/ci.yml?branch=main&logo=github-actions&label=last%20workflow)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jpb06_github-stats)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=jpb06_github-stats)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=security_rating)](https://sonarcloud.io/dashboard?id=jpb06_github-stats)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=jpb06_github-stats)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=coverage)](https://sonarcloud.io/dashboard?id=jpb06_github-stats)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=jpb06_github-stats)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=jpb06_github-stats)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=code_smells)](https://sonarcloud.io/dashboard?id=jpb06_github-stats)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=bugs)](https://sonarcloud.io/summary/new_code?id=jpb06_github-stats)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=jpb06_github-stats)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=jpb06_github-stats&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=jpb06_github-stats)
 ![Last commit](https://img.shields.io/github/last-commit/jpb06/effect-github-stats?logo=git)
 
 An [Effect](https://effect.website/) layer to interact with github api.
+
+# 😺 This codebase has moved to [effect-octokit-layer](https://github.com/jpb06/effect-octokit-layer)
 
 <!-- readme-package-icons start -->
 
